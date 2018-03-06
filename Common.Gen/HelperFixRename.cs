@@ -30,20 +30,12 @@ namespace Common.Gen
         {
             foreach (var item in sysObject.Contexts)
             {
-
                 FixFileInFolder(item.OutputClassDomain);
                 FixFileInFolder(item.OutputClassApp);
-                FixFileInFolder(item.OutputClassUri);
-                FixFileInFolder(item.OutputClassTestsApp);
-                FixFileInFolder(item.OutputClassTestsApi);
                 FixFileInFolder(item.OutputClassApi);
                 FixFileInFolder(item.OutputClassDto);
-                FixFileInFolder(item.OutputClassSummary);
                 FixFileInFolder(item.OutputClassFilter);
-                FixFileInFolder(item.OutputClassInfra);
-
             }
-
         }
 
         private static void FixFileInFolder(string root)

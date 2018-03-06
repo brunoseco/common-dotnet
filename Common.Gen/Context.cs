@@ -162,8 +162,6 @@ namespace Common.Gen
 
         public bool CamelCasing { get; set; }
         
-        public string OutputClassSso { get; set; }
-
         public string OutputAngular { get; set; }
 
         public string ConnectionString { get; set; }
@@ -171,22 +169,12 @@ namespace Common.Gen
         public string OutputClassDomain { get; set; }
 
         public string OutputClassApp { get; set; }
-
-        public string OutputClassUri { get; set; }
-
-        public string OutputClassTestsApp { get; set; }
-
-        public string OutputClassTestsApi { get; set; }
-
+        
         public string OutputClassApi { get; set; }
 
         public string OutputClassDto { get; set; }
-
-        public string OutputClassSummary { get; set; }
         
         public string OutputClassFilter { get; set; }
-
-        public string OutputClassInfra { get; set; }
 
         #endregion
 

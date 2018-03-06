@@ -48,10 +48,12 @@ namespace Common.Gen
         {
             MakeClass(config, string.Empty, true);
         }
+
         public virtual void MakeClass(Context config, bool UsePathProjects)
         {
             MakeClass(config, string.Empty, UsePathProjects);
         }
+
         public virtual void MakeClass(Context config, string RunOnlyThisClass, bool UsePathProjects)
         {
             PathOutputBase.UsePathProjects = UsePathProjects;
@@ -63,6 +65,9 @@ namespace Common.Gen
         }
         protected virtual string MakeClassName(TableInfo tableInfo)
         {
+            if (tableInfo.ClassName.IsSent())
+                return tableInfo.ClassName;
+
             return tableInfo.TableName;
         }
         protected virtual string MakePropertyName(string column, string className, int key)
@@ -306,24 +311,9 @@ namespace Common.Gen
 
                         if (item.Type == "string")
                         {
-                            var hasCoColumnType = string.Empty;
-                            if (configContext.Arquiteture == ArquitetureType.TableModel)
-                            {
-                                if (item.Length != "-1")
-                                    hasCoColumnType = string.Format(".HasColumnType(\"{0}\").HasMaxLength({1})", item.TypeOriginal, item.Length);
-                            }
-                            else if (configContext.Arquiteture == ArquitetureType.DDD)
-                            {
-                                hasCoColumnType = string.Format(".HasColumnType(\"{0}({1})\")", item.TypeOriginal, item.Length);
-                                if (item.Length == "-1")
-                                    hasCoColumnType = string.Format(".HasColumnType(\"{0}(max)\")", item.TypeOriginal);
-                            }
-                            else if (configContext.Arquiteture == ArquitetureType.ReadOnly)
-                            {
-                                hasCoColumnType = string.Format(".HasColumnType(\"{0}({1})\")", item.TypeOriginal, item.Length);
-                                if (item.Length == "-1")
-                                    hasCoColumnType = string.Format(".HasColumnType(\"{0}(max)\")", item.TypeOriginal);
-                            }
+                            var hasCoColumnType = string.Format(".HasColumnType(\"{0}({1})\")", item.TypeOriginal, item.Length);
+                            if (item.Length == "-1")
+                                hasCoColumnType = string.Format(".HasColumnType(\"{0}(max)\")", item.TypeOriginal);
 
                             itemplateMapper = itemplateMapper.Replace(";", string.Empty);
                             itemplateMapper = itemplateMapper + hasCoColumnType + ";";
@@ -1025,11 +1015,6 @@ namespace Common.Gen
             }
         }
 
-        private void IsValid(TableInfo tableInfo)
-        {
-            if (tableInfo.ClassName.IsNull())
-                throw new InvalidOperationException("Para gerar Classes com Scaffold false é preciso setar a propriedade className");
-        }
         private void ExecuteTemplatesByTableleInfo(Context config)
         {
             foreach (var tableInfo in config.TableInfo)
@@ -1037,6 +1022,7 @@ namespace Common.Gen
                 DefineTemplateByTableInfo(config, tableInfo);
             }
         }
+
         private void DefineInfoKey(TableInfo tableInfo, List<Info> infos)
         {
             var keys = infos.Where(_ => _.IsKey == 1);
@@ -1076,8 +1062,6 @@ namespace Common.Gen
             {
                 qtd++;
                 var infos = new UniqueListInfo();
-
-                this.IsValid(tableInfo);
 
                 var reader = GetInfoSysObjectsComplete(config, tableInfo);
 

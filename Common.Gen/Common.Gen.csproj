@@ -127,8 +127,6 @@
     <Compile Include="HelperFixRename.cs" />
     <Compile Include="Structural\ELayer.cs" />
     <Compile Include="Structural\HelperSysObjectUtil.cs" />
-    <Compile Include="TransactionScript\DefineTemplateNameTransactionScript.cs" />
-    <Compile Include="TransactionScript\HelperSysObjectsTransactionScript.cs" />
     <Compile Include="HelperRestrictions.cs" />
     <Compile Include="Structural\ConfigExecuteTemplateClass.cs" />
     <Compile Include="Structural\EFlowTemplate.cs" />
@@ -137,7 +135,6 @@
     <Compile Include="Structural\ConfigExecuteTemplate.cs" />
     <Compile Include="Structural\HelperSysObjectsBaseFront.cs" />
     <Compile Include="Structural\PathOutputBase.cs" />
-    <Compile Include="TransactionScript\PathOutputTransactionScript.cs" />
     <Compile Include="Vue\DefineTemplateNameVue.cs" />
     <Compile Include="Vue\HelperSysObjectsVue.cs" />
     <Compile Include="Vue\PathOutputVue.cs" />

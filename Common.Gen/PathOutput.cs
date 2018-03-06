@@ -13,7 +13,7 @@ namespace Common.Gen
         {
             var pathOutput = string.Empty;
             var pathBase = PathOutputBase.PathBase(configContext.OutputClassDomain);
-            pathOutput = Path.Combine(pathBase, "Maps", string.Format("{0}Map.ext.{1}", tableInfo.ClassName, "cs"));
+            pathOutput = Path.Combine(pathBase, "Maps", tableInfo.ClassName, string.Format("{0}Map.ext.{1}", tableInfo.ClassName, "cs"));
             PathOutputBase.MakeDirectory(pathBase, "Maps", tableInfo.ClassName);
 
             return pathOutput;
@@ -94,7 +94,7 @@ namespace Common.Gen
         {
             var pathOutput = string.Empty;
 
-            var pathBase = PathOutputBase.PathBase(configContext.OutputClassApp);
+            var pathBase = PathOutputBase.PathBase(configContext.OutputClassApi);
 
             pathOutput = Path.Combine(pathBase, "Config", string.Format("ConfigContainer{0}.{1}", configContext.Module, "cs"));
             PathOutputBase.MakeDirectory("Config", pathBase);
@@ -106,7 +106,7 @@ namespace Common.Gen
         {
             var pathOutput = string.Empty;
 
-            var pathBase = PathOutputBase.PathBase(configContext.OutputClassApp);
+            var pathBase = PathOutputBase.PathBase(configContext.OutputClassApi);
 
             pathOutput = Path.Combine(pathBase, "Config", string.Format("ConfigContainer{0}.ext.{1}", configContext.Module, "cs"));
             PathOutputBase.MakeDirectory("Config", pathBase);
@@ -176,7 +176,7 @@ namespace Common.Gen
         {
             var pathOutput = string.Empty;
             var pathBase = PathOutputBase.PathBase(configContext.OutputClassDto);
-            pathOutput = Path.Combine(pathBase, "Dto", tableInfo.ClassName, string.Format("{0}DtoSve.ext.{1}", tableInfo.ClassName, "cs"));
+            pathOutput = Path.Combine(pathBase, "Dto", tableInfo.ClassName, string.Format("{0}DtoSave.ext.{1}", tableInfo.ClassName, "cs"));
             PathOutputBase.MakeDirectory(pathBase, "Dto", tableInfo.ClassName);
             return pathOutput;
         }

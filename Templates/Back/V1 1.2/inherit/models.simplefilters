@@ -1,0 +1,24 @@
+﻿using <#namespace#>.Filters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace <#namespace#>.Domain.Models.<#boundedContext#>
+{
+    public static class <#className#>SimpleFiltersExtensions
+    {
+        public static IQueryable<<#className#>> SimpleFilters(this IQueryable<<#className#>> queryBase, <#className#>Filter filters)
+        {
+
+			var queryFilter = queryBase;
+
+<#filtersExpressions#>
+
+            return queryFilter;
+
+        }
+
+    }
+}

@@ -8,7 +8,8 @@ namespace Common.Domain.Enums
 {
     public enum TipoSMS
     {
-        Corporativo = 1,
-        Marketing = 2
+        Default = 1,
+        Corporativo = 2,
+        Marketing = 2,
     }
 }

@@ -1,0 +1,68 @@
+﻿
+            .state('<#className#>', {
+                url: '/<#className#>',
+                views: {
+                    'main': {
+                        templateUrl: MakeUrl('view/<#className#>/index.html'),
+                        controller: '<#className#>Controller as vm',
+                        resolve: {
+                            auth: _isAuth,
+                            loadPlugin: function ($ocLazyLoad) {
+                                return $ocLazyLoad.load(
+                                    [
+										'js/constants/<#className#>.constants.js',
+										'js/controllers/<#className#>/<#className#>.custom.controller.js',
+										'js/controllers/<#className#>/<#className#>.controller.js'
+									]
+                                );
+                            }
+                        }
+                    }
+                }
+            })
+
+
+			.state('<#className#>-edit', {
+                url: '/<#className#>/Edit/:Id',
+                views: {
+                    'main': {
+                        templateUrl: MakeUrl('view/<#className#>/edit.html'),
+                        controller: '<#className#>Controller as vm',
+                        resolve: {
+                            auth: _isAuth,
+                            loadPlugin: function ($ocLazyLoad) {
+                                return $ocLazyLoad.load(
+                                    [
+										'js/constants/<#className#>.constants.js',
+										'js/controllers/<#className#>/<#className#>.custom.controller.js',
+										'js/controllers/<#className#>/<#className#>.controller.js'
+									]
+                                );
+                            }
+                        }
+                    }
+                }
+            })
+
+
+			.state('<#className#>-create', {
+                url: '/<#className#>/Create',
+                views: {
+                    'main': {
+                        templateUrl: MakeUrl('view/<#className#>/create.html'),
+                        controller: '<#className#>Controller as vm',
+                        resolve: {
+                            auth: _isAuth,
+                            loadPlugin: function ($ocLazyLoad) {
+                                return $ocLazyLoad.load(
+                                    [
+										'js/constants/<#className#>.constants.js',
+										'js/controllers/<#className#>/<#className#>.custom.controller.js',
+										'js/controllers/<#className#>/<#className#>.controller.js'
+									]
+                                );
+                            }
+                        }
+                    }
+                }
+            })

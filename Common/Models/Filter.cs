@@ -19,6 +19,17 @@ namespace Common.Models
             this.PageSize = 50;
             this.ByCurrentUser = true;
             this.CacheExpiresTime = new TimeSpan(24, 0, 0);
+            this.Async = false;
+        }
+
+        public bool Async { get; set; }
+
+        public int PageSkipped
+        {
+            get
+            {
+                return (this.PageIndex > 0 ? this.PageIndex - 1 : 0) * this.PageSize;
+            }
         }
 
         public TimeSpan CacheExpiresTime { get; set; }
@@ -42,6 +53,13 @@ namespace Common.Models
         public void OrderBy(params string[] OrderFields)
         {
             this.OrderFields = OrderFields;
+        }
+
+        public string Ids { get; set; }
+
+        public IEnumerable<int> GetIds()
+        {
+            return this.Ids.Split(',').Select(_ => Convert.ToInt32(_));
         }
     }
 }

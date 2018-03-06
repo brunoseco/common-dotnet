@@ -1,0 +1,205 @@
+﻿using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Common.Domain.Interfaces;
+using Common.Infrastructure.Cache;
+using System.Collections.Generic;
+using Common.Models;
+using <#namespaceDomainSource#>.Filters;
+using Common.Interfaces;
+using <#namespace#>.Dto;
+using <#namespaceDomainSource#>.Domain;
+using Common.Domain;
+using System.Transactions;
+using Common.Infrastructure.Log;
+
+namespace <#namespace#>.Application
+{
+    public partial class <#className#>App : IDisposable
+    {
+        private IRepository<<#className#>> rep<#className#>;
+        private ICache cache;
+        private <#className#> <#className#>;
+
+        public <#className#>App(string token)
+        {
+			this.Init(token);
+        }
+
+		public async Task<IEnumerable<string>> GetDomainWarning(<#className#>Filter filters = null)
+        {
+			return await Task.Run(()=> {
+				return this.<#className#>.GetDomainWarning(filters.IsNotNull() ? filters : new <#className#>Filter { });
+			});
+        }
+
+		public async Task<IEnumerable<ValidationConfirm>> GetDomainConfirms(<#className#>Filter filters= null)
+        {
+			return await Task.Run(() => {
+				return this.<#className#>.GetDomainConfirms(filters.IsNotNull() ? filters : new <#className#>Filter { });
+			});
+        }
+
+		public async Task<SearchResult<Common.Dto.DtoBase>> GetByFilters(<#className#>Filter filter)
+        {
+			return await Task.Run(()=> {
+				var result = default(SearchResult<Common.Dto.DtoBase>);
+				using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+				{
+					result = GetByFiltersWithCache(filter, MapperDomainToResult);
+				}
+				return result;
+			});
+        }
+
+		public async Task<SearchResult<Common.Dto.DtoBase>> GetReport(<#className#>Filter filter)
+        {	
+			return await Task.Run(()=> {
+				var result = default(SearchResult<Common.Dto.DtoBase>);
+				result = GetByFiltersWithCache(filter, MapperDomainToReport);
+				return result;
+			});
+        }
+		
+		public async Task<SearchResult<dynamic>> GetDataListCustom(<#className#>Filter filters)
+        {
+			var pagingResult = this.<#className#>.GetDataListCustomPaging(filters);
+            var result = new SearchResult<dynamic>
+            {
+                DataList =  filters.Async ? await this.rep<#className#>.ToListAsync(pagingResult.ResultPaginatedData.AsQueryable()) : await Task.Run(() =>
+                {
+                    return pagingResult.ResultPaginatedData.ToList();
+                }),
+                Summary = await this.<#className#>.GetSummaryDataListCustom(pagingResult.Source)
+            };
+            return result;
+        }
+
+		
+		public async Task<dynamic> GetDataCustom(<#className#>Filter filters)
+        {
+			return await Task.Run(()=> {
+				var result = default(dynamic);
+				result = this.<#className#>.GetDataCustom(filters);
+				return result;
+			});
+        }
+
+		public async Task<Common.Dto.DtoBase> Get(<#className#>Dto dto)
+        {
+			return await Task.Run(()=> {
+				var result = default(Common.Dto.DtoBase);
+				var model =  AutoMapper.Mapper.Map<<#className#>Dto, <#className#>>(dto);
+				var data = this.<#className#>.GetOne(model);
+				result =  this.MapperDomainToDtoSpecialized(data, dto);
+				return result;
+			});
+        }
+
+		public async Task<Common.Dto.DtoBase> GetDetails(<#className#>Dto dto)
+        {
+			return await Task.Run(()=> {
+				var result = default(Common.Dto.DtoBase);
+				var model =  AutoMapper.Mapper.Map<<#className#>Dto, <#className#>>(dto);
+				var data = this.<#className#>.GetOne(model);
+				result =  this.MapperDomainToDtoDetails(data, dto);
+				return result;
+			});
+        }
+
+		public async Task<IEnumerable<DataItem>> GetDataItem(IFilter filters)
+		{
+			var filter = (filters as <#className#>Filter).IsNotNull() ? filters as <#className#>Filter : new <#className#>Filter { };
+			var filterKey = filter.CompositeKey(); 
+
+			if (filter.ByCache)
+			{
+				if (this.cache.ExistsKey<IEnumerable<DataItemCache>>(filterKey))
+				{
+					var resultCache = this.cache.GetAndCast<IEnumerable<DataItemCache>>(filterKey);
+                    return await Task.Run(() =>
+                    {
+                        return resultCache.Select(_ => new DataItem
+                        {
+                            Id = _.Id,
+                            Name = _.Name
+                        });
+                    });
+				}
+			}
+
+			var result = await this. <#className#>.GetDataItem(filter);
+			if (filter.ByCache)
+			{
+				if (!result.IsAny()) return result;
+				this.cache.Add(filterKey, result.Select(_ => new DataItemCache
+				{
+					Id = _.Id,
+					Name = _.Name
+				}).ToList(), filter.CacheExpiresTime);
+				this.AddTagCache(filterKey);
+				FactoryLog.GetInstace().Debug(string.Format("DataItem:{0} - Key:{1} - CacheExpiresTime:{2}", filter.CacheGroup, filterKey, filter.CacheExpiresTime));
+			}
+			return result;
+		}
+
+		public async Task<int> GetTotalByFilters(<#className#>Filter filter)
+        {
+			return await Task.Run(()=> {
+				var result = default(int);
+				result = this.<#className#>.GetByFilters(filter).Count();
+				return result;
+			});
+        }
+				
+		private Common.Models.Summary Summary(IQueryable<<#className#>> queryBase, PaginateResult<<#className#>> dataList)
+        {
+			return this.<#className#>.GetSummary(queryBase);
+        }
+
+		private SearchResult<Common.Dto.DtoBase> GetByFiltersWithCache(<#className#>Filter filter, Func<<#className#>Filter, PaginateResult<<#className#>>, IEnumerable<Common.Dto.DtoBase>> MapperDomainToDto)
+        {
+            var filterKey = filter.CompositeKey();
+            if (filter.ByCache)
+                if (this.cache.ExistsKey<SearchResult<Common.Dto.DtoBase>>(filterKey))
+                    return this.cache.GetAndCast<SearchResult<Common.Dto.DtoBase>>(filterKey);
+
+			var paginateResultOptimize = this.<#className#>.GetByFiltersPaging(filter);
+            var result = MapperDomainToDto(filter, paginateResultOptimize);
+			this.<#className#>.SummaryBehavior = filter.SummaryBehavior;
+            this.<#className#>.TotalCount = paginateResultOptimize.TotalCount;
+            var summary = this.Summary(paginateResultOptimize.Source, paginateResultOptimize);
+
+            var searchResult = new SearchResult<Common.Dto.DtoBase>
+            {
+                DataList = result,
+                Summary = summary,
+            };
+
+            if (filter.ByCache)
+			{
+				if (!searchResult.DataList.IsAny()) return searchResult;
+                this.cache.Add(filterKey, searchResult, filter.CacheExpiresTime);
+				this.AddTagCache(filterKey);
+			}
+
+            return searchResult;
+        }
+		
+        private void AddTagCache(string filterKey)
+        {
+            var tags = this.cache.GetAndCast<List<string>>("<#className#>") as List<string>;
+            if (tags.IsNull()) tags = new List<string>();
+				tags.Add(filterKey);
+            this.cache.Add("<#className#>", tags);
+        }
+		
+	
+
+        public void Dispose()
+        {
+            this.<#className#>.Dispose();
+        }
+    }
+}

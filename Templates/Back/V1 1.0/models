@@ -1,0 +1,103 @@
+﻿using System;
+using System.Linq;
+using Common.Domain;
+using Common.Domain.Interfaces;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using <#namespaceDomainSource#>.Filters;
+using Common.Models;
+
+namespace <#namespace#>.Domain
+{
+	public partial class <#className#> : DomainBase, IDisposable, <#IDomain#><<#className#>>
+	{
+        protected IRepository<<#className#>> rep;
+		private ICache cache;
+		public ValidationHelper ValidationHelper = new ValidationHelper();
+
+        public <#className#>(IRepository<<#className#>> rep, ICache cache):this()
+        {
+            this.rep = rep;
+            this.cache = cache;
+			<#toolName#>
+			this.Init();
+        }
+	
+<#property#>
+
+		public virtual void Warnings(<#className#>Filter filters)
+        {
+            ValidationHelper.AddDomainWarning<<#className#>>("");
+        }
+
+        public IQueryable<<#className#>> GetAll(params Expression<Func<<#className#>, object>>[] includes)
+        {
+			this.ValidateAuth(base.token,this.cache);
+            return this.rep.GetAll(includes);
+        }
+
+		
+		public <#className#> GetFromContext(<#className#> model)
+        {
+			this.ValidateAuth(base.token,this.cache);
+			return this.rep.Get(<#KeyNames#>);
+        }
+
+		public virtual dynamic GetDataCustom(<#className#>Filter filters)
+        {
+            var result = this.GetByFilters(filters);
+            return result.Select(_ => new
+            {
+				CustomFieldOrder =_.<#KeyName#>,
+				<#KeyName#> = _.<#KeyName#>	
+            }).SingleOrDefault();
+        }
+
+		public virtual IEnumerable<dynamic> GetDataListCustom(<#className#>Filter filters)
+        {
+            var result = this.GetByFilters(filters);
+
+            return result.Select(_ => new
+            {
+				<#KeyName#> = _.<#KeyName#>	
+            });
+        }
+
+		public virtual Summary GetSummaryDataListCustom(IEnumerable<dynamic> result)
+        {
+            return new Summary
+            {
+                Total = result.Count()
+            };
+        }
+
+		public int Total()
+        {
+			this.ValidateAuth(base.token,this.cache);
+            return this.rep.GetAll().Count();
+        }
+
+		private IQueryable<<#className#>> SimpleFilters(<#className#>Filter filters,IQueryable<<#className#>> queryBase)
+        {
+			var queryFilter = queryBase;
+
+
+<#filtersExpressions#>
+
+            return queryFilter;
+        }
+
+		protected bool Confirm(<#className#> model, <#className#> modelOld)
+        {
+            return true;
+        }
+
+		private Expression<Func<<#className#>, object>>[] DataAgregationBehaviorDefault(Expression<Func<<#className#>, object>>[] includes)
+        { 
+            return includes;
+        }
+
+
+				
+	}
+}

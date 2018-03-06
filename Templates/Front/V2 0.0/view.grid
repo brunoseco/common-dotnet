@@ -1,0 +1,37 @@
+﻿<div class="row">
+  <div class="col-xs-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">Resultado</div>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <#TableViewHead#>
+                <th style="width:100px;" class="text-center">Ações</th>
+
+              </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="item in vm.FilterResult">
+              <#TableViewBody#>
+                <td>
+                  <button ng-click="vm.crud.<#EditFunc#>" tooltip-placement="top" uib-tooltip="Editar" class="btn btn-xs btn-primary">
+                      <i class="fa fa-pencil"></i>
+                    </button>
+                  <button ng-click="vm.crud.<#DetailsFunc#>" tooltip-placement="top" uib-tooltip="Detalhes" class="btn btn-xs btn-primary">
+                      <i class="fa fa-table"></i>
+                    </button>
+                  <button ng-click="vm.crud.Delete(item)" tooltip-placement="top" uib-tooltip="Excluir" class="btn btn-xs btn-danger">
+                    <i class="fa fa-trash-o"></i>
+                  </button>
+                </td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="text-center">
+      <div-pagination />
+    </div>
+  </div>
+</div>

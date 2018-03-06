@@ -15,6 +15,11 @@ public static class DateExtensions
         return (intersectingEndDate >= startDate && intersectingStartDate <= endDate);
     }
 
+    public static DateTime ToShortDate(this DateTime date)
+    {
+        return Convert.ToDateTime(date.ToShortDateString());
+    }
+
     public static bool UnderAge(this DateTime birthday)
     {
         var years = birthday.YearsOld();
@@ -64,6 +69,11 @@ public static class DateExtensions
         var saturday = (int)DayOfWeek.Saturday;
         return data.AddDays((saturday - weekDay));
     }
+    public static int HalfYear(this DateTime data)
+    {
+        if (data.Month <= 6) return 1;
+        return 2;
+    }
 
     public static int MonthDays(this DateTime data)
     {
@@ -72,13 +82,13 @@ public static class DateExtensions
         return DateTime.DaysInMonth(year, month);
     }
 
-    public static DateTime StartMonthDate(this DateTime data)
+    public static DateTime FirstDayInMonth(this DateTime data)
     {
         int dayToday = data.Day - 1;
         return data.AddDays(-dayToday);
     }
 
-    public static DateTime EndMonthDate(this DateTime data)
+    public static DateTime LastDayInMonth(this DateTime data)
     {
         int dayToday = data.Day;
         int lastDayOfMonth = data.MonthDays();
@@ -99,14 +109,6 @@ public static class DateExtensions
         var dayBase = dateBase.Day;
         var day = dayBase > lastDayInMonth.Day ? lastDayInMonth.Day : dayBase;
         return new DateTime(dateBase.Year, dateBase.Month, day);
-    }
-
-    public static DateTime LastDayInMonth(DateTime dateBase)
-    {
-        if (dateBase.Month == 12)
-            return new DateTime(dateBase.Year + 1, 2, 1).AddDays(-1);
-
-        return new DateTime(dateBase.Year, dateBase.Month + 1, 1).AddDays(-1);
     }
 
     public static int ToMinutes(this DateTime data)

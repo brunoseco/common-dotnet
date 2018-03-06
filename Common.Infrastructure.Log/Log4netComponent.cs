@@ -14,7 +14,8 @@ namespace Common.Infrastructure.Log
         public Log4netComponent()
         {
              this.log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-             log4net.Config.XmlConfigurator.Configure();
+            //log4net.Config.XmlConfigurator.Configure();
+            Logger.Setup();
         }
 
         public void Debug(string message)

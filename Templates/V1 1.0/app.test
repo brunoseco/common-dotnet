@@ -1,0 +1,54 @@
+﻿using System;
+using System.Data;
+using System.Linq;
+using System.Threading;
+using System.Diagnostics;
+using System.Globalization;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Common.Models;
+using Common.Domain;
+using Common.Test;
+using <#namespaceDomainSource#>.Filters;
+using <#namespace#>.Dto;
+using System.Configuration;
+using Common.Authentication.Dto;
+using Common.Domain.CustomExceptions;
+using <#namespaceRoot#>.Custom.Uri.Api;
+using <#namespaceRoot#>.Auth.Infrastructure.User;
+
+
+namespace <#namespace#>.Application.Test
+{
+    [TestClass]
+    public partial class UnitTest<#className#>App : TestBase
+    {
+
+		public override void Auth()
+        {
+
+            var TesterPassword = ConfigurationManager.AppSettings["TesterPassword"];
+            var TesterEmail = ConfigurationManager.AppSettings["TesterEmail"];
+
+            var Account = new Account();
+            var credential = new CredentialDto { Email = TesterEmail, Password = TesterPassword };
+			this.token = Account.Login(credential).Token;
+        }
+		
+		[TestMethod]
+        public void WhenGetFilteredRowsThenReciveMoreThanZeroRows()
+        {
+			var app = new <#className#>App(base.token);
+            
+			var result = app.GetByFilters(new <#className#>Filter 
+            {
+                IsPagination = true
+            });
+
+            Assert.IsTrue(result.DataList.Count() > 0);
+            app.Dispose();
+        }
+
+	
+	}
+}

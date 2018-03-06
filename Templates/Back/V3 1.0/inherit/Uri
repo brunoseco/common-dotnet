@@ -1,0 +1,118 @@
+﻿using Common.API;
+using Common.Interfaces;
+using System.Configuration;
+using <#namespace#>.Dto.<#boundedContext#>;
+using System.Collections.Generic;
+
+namespace <#namespace#>.Uri.Api
+{
+ public class <#inheritClassName#>Uri
+    {
+        private string endPointApi<#module#>;
+
+        public <#inheritClassName#>Uri()
+        {
+			this.endPointApi<#module#> = ConfigurationManager.AppSettings["endPointApi<#module#>"];
+        }
+
+		public HttpResult<Common.Dto.DtoBase> Get(string token)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<Common.Dto.DtoBase>(token, string.Format("api/<#inheritClassName#>"));
+			return response;
+        }
+
+		public HttpResult<Common.Dto.DtoBase> GetByModel(string token, Common.Dto.DtoBase dto)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<Common.Dto.DtoBase, Common.Dto.DtoBase>(token, "api/<#inheritClassName#>/GetByModel", dto);
+			return response;
+        }
+
+		public HttpResult<Common.Dto.DtoBase> Get(string token, int id)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<Common.Dto.DtoBase>(token, string.Format("api/<#inheritClassName#>/{0}", id));
+			return response;
+        }
+
+		public HttpResult<T> Get<T>(string token, int id)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<T>(token, string.Format("api/<#inheritClassName#>/{0}", id));
+			return response;
+        }
+
+		public HttpResult<Common.Dto.DtoBase> Get(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<Common.Dto.DtoBase, IFilter>(token, "api/<#inheritClassName#>", filter);
+            return response;
+        }
+
+
+		public HttpResult<Common.Dto.DtoBase> GetReport(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<Common.Dto.DtoBase, IFilter>(token, "api/<#inheritClassName#>/GetReport", filter);
+            return response;
+        }
+
+		public async Task<HttpResult<dynamic>> GetDataListCustom(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<dynamic, IFilter>(token, "api/<#inheritClassName#>/GetDataListCustom", filter);
+			return response;
+        }
+
+		public async Task<HttpResult<dynamic>> GetDataCustom(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<dynamic, IFilter>(token, "api/<#inheritClassName#>/GetDataCustom", filter);
+			return response;
+        }
+
+        public HttpResult<int> GetTotalByFilters(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<int, IFilter>(token, "api/<#inheritClassName#>/GetTotalByFilters", filter);
+            return response;
+        }
+
+		public HttpResult<T> Get<T>(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<T, IFilter>(token, "api/<#inheritClassName#>", filter);
+            return response;
+        }
+
+		public HttpResult<T> GetByModel<T>(string token, Common.Dto.DtoBase dto)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<T, Common.Dto.DtoBase>(token, "api/<#inheritClassName#>/GetByModel", dto);
+			return response;
+        }
+
+		public HttpResult<Common.Dto.DtoBase> GetDetails(string token, Common.Dto.DtoBase dto)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<Common.Dto.DtoBase, Common.Dto.DtoBase>(token, "api/<#inheritClassName#>/GetDetails", dto);
+			return response;
+        }
+
+		public HttpResult<T> GetDetails<T>(string token, Common.Dto.DtoBase dto)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<T, Common.Dto.DtoBase>(token, "api/<#inheritClassName#>/GetDetails", dto);
+			return response;
+        }
+
+		public HttpResult<T> GetReport<T>(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<T, IFilter>(token, "api/<#inheritClassName#>/GetReport", filter);
+            return response;
+        }
+
+    }
+}

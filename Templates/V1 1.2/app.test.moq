@@ -1,0 +1,51 @@
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using System.Globalization;
+using System.Collections.Generic;
+using Common.Domain;
+using System.Diagnostics;
+using System.Linq;
+using Common.Test;
+using <#namespace#>.Dto;
+using <#namespace#>.Application;
+<#namespaceReleted#>
+
+namespace <#namespace#>.Application.Test
+{
+	public partial class Helper<#className#>Moq : TestBase
+	{
+
+		public static <#className#>Dto MoqObject(string token)
+		{
+			return MoqObject(null,token);
+		}
+		public  static <#className#>Dto MoqObject(<#className#>Dto dto,string token)
+		{
+			if (dto.IsNotNull())
+			{
+				var app = new <#className#>App(token);
+				var data = app.Get(dto);
+				return MoqObjectSetValues(data,token);
+			}
+
+			return MoqObjectSetValues(new <#className#>Dto(),token);
+		
+		}
+
+		public static <#className#>Dto MoqObjectSetValues(<#className#>Dto data,string  token)
+		{
+
+
+<#moqValuesinsert#>
+			
+			SetRelatedValues(data,token);
+
+			SetManualValues(data,token);
+
+			return data;
+		}
+
+	}
+}
+

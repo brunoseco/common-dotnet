@@ -1,0 +1,43 @@
+﻿using Cna.Erp.<#module#>.Infrastructure.ORM.Contexto;
+using Common.Infrastructure.Log;
+using InteractivePreGeneratedViews;
+using System;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Infrastructure.MappingViews;
+using System.IO;
+
+
+public class MappingViewCache<#module#>Genereted : DbMappingViewCache
+{
+
+    public static void LoadPreCompiledViews()
+    {
+        var log = FactoryLog.GetInstace();
+        var ctx = new DbContext<#module#>(log);
+        var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"MappingViewCache<#module#>Genereted.xml");
+        InteractiveViews.SetViewCacheFactory(ctx, new FileViewCacheFactory(path));
+		//InteractiveViews.SetViewCacheFactory(ctx, new SqlServerViewCacheFactory(ctx.Database.Connection.ConnectionString));
+    }
+
+    public override string MappingHashValue
+    {
+        get { return "<#ComputeMappingHashValue#>"; }
+    }
+
+    public override DbMappingView GetView(EntitySetBase extent)
+    {
+
+		var viewname = string.Format("{0}.{1}", extent.EntityContainer.Name, extent.Name);
+
+<#conditional#>
+
+		return null;
+
+        
+    }
+
+	<#viewsList#>
+
+
+}
+

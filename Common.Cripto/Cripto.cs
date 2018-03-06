@@ -1,28 +1,26 @@
 ﻿using Common.Domain.Enums;
 using Common.Domain.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Cripto
 {
-   
+
     public class Cripto : ICripto
     {
         public string Salt { get; set; }
 
         public string Encrypt(string value, TypeCripto type)
         {
-            if(type == TypeCripto.Hash128)
+            if (type == TypeCripto.Hash128)
                 return ComputeHash128(value);
 
             if (type == TypeCripto.Hash512)
                 return ComputeHash512(value);
 
             return string.Empty;
+
         }
 
         private string ComputeHash128(string value)
@@ -31,7 +29,9 @@ namespace Common.Cripto
             byte[] toEncryptorDecryptArray;
             ICryptoTransform cTransform;
             MD5CryptoServiceProvider md5Hasing = new MD5CryptoServiceProvider();
-            byte[] keyArrays = md5Hasing.ComputeHash(UTF8Encoding.UTF8.GetBytes(Salt));
+            if (this.Salt.IsNullOrEmpaty())
+                throw new InvalidOperationException("Salt not found");
+            byte[] keyArrays = md5Hasing.ComputeHash(UTF8Encoding.UTF8.GetBytes(this.Salt));
             md5Hasing.Clear();
             TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider() { Key = keyArrays, Mode = CipherMode.ECB, Padding = PaddingMode.PKCS7 };
             if (encrypt == true)
@@ -55,6 +55,10 @@ namespace Common.Cripto
         private string ComputeHash512(string value)
         {
             System.Security.Cryptography.SHA512Managed sha512 = new System.Security.Cryptography.SHA512Managed();
+
+            if (this.Salt.IsNullOrEmpaty())
+                throw new InvalidOperationException("Salt not found");
+
             Byte[] EncryptedSHA512 = sha512.ComputeHash(System.Text.Encoding.UTF8.GetBytes(string.Concat(value, this.Salt)));
             sha512.Clear();
             return Convert.ToBase64String(EncryptedSHA512);

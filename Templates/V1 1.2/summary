@@ -1,0 +1,8 @@
+﻿
+namespace <#namespace#>.ModelSummary
+{
+	public class <#className#>Summary
+	{
+	
+	}
+}

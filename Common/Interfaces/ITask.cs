@@ -14,11 +14,6 @@ namespace Common.Interfaces
             get;
             set;
         }
-        bool Async
-        {
-            get;
-            set;
-        }
 
         bool Running
         {
@@ -26,17 +21,12 @@ namespace Common.Interfaces
             set;
         }
 
-        bool Executed
+        bool Schaduled
         {
             get;
             set;
         }
 
-        bool ExecutedProcessDependency
-        {
-            get;
-            set;
-        }
 
         bool Disabled
         {
@@ -44,15 +34,11 @@ namespace Common.Interfaces
             set;
         }
 
-        int? TaskGroupId
-        {
-            get;
-            set;
-        }
 
-        void Execute(Action<IAsyncResult> completed);
+        void Execute(string token, string attributeBehavior, bool schaduleOn = false, Action<IAsyncResult> completed = null, int? escolaId = null);
+
+        void ChkAuth();
 
 
     }
 }
-    

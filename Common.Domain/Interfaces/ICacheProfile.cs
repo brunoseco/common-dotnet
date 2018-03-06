@@ -12,8 +12,8 @@ namespace Common.Domain.Interfaces
         void Add(string roleId, int externalId, string name, object value);
         void Update(string roleId, object value);
         void Remove(string roleId);
-        IEnumerable<object> Get(IEnumerable<string> rolesId);
-        IEnumerable<object> Get(IEnumerable<int> externalsId);
+        IEnumerable<T> GetAndCast<T>(IEnumerable<string> rolesId);
+        IEnumerable<T> GetAndCast<T>(IEnumerable<int> externalsId);
         void RegisterClassMap<T>();
 
     }

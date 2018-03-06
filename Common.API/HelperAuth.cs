@@ -37,15 +37,19 @@ namespace Common.API
         {
             return SetCookieToken(token, "UserCookieAuthentication");
         }
+
         public static string SetCookieToken(string token, string cookieName)
         {
+            if (HttpContext.Current.IsNull())
+                return token;
+
             ExpiresCookie(cookieName);
             var UserCookieAuthentication = new HttpCookie(cookieName);
             UserCookieAuthentication.Value = token;
             HttpContext.Current.Response.Cookies.Add(UserCookieAuthentication);
             UserCookieAuthentication.Expires = DateTime.Now.AddYears(1);
-            var cookie = GetCookieToken();
-            return cookie;
+            var cookieToken = GetCookieToken();
+            return cookieToken;
 
         }
 
@@ -56,6 +60,9 @@ namespace Common.API
         public static void ExpiresCookie(string cookieName)
         {
 
+            if (HttpContext.Current.IsNull())
+                return;
+
             if (HttpContext.Current.Request.Cookies[cookieName] != null)
             {
                 var UserCookieAuthentication = new HttpCookie(cookieName);
@@ -64,6 +71,7 @@ namespace Common.API
                 HttpContext.Current.Response.Cookies.Remove(cookieName);
 
             }
+
 
         }
 
@@ -78,6 +86,28 @@ namespace Common.API
                 HttpContext.Current.Response.Cookies[cookieName].Value = null;
                 HttpContext.Current.Response.Cookies[cookieName].Expires = DateTime.Now.AddMonths(-1);
             }
+        }
+
+        public static bool EnabledRedirectHttps()
+        {
+            if (ConfigurationManager.AppSettings["enabledRedirectHttps"] == "true")
+            {
+                if (HttpContext.Current.Request.Url.Scheme.ToLower() == "http")
+                {
+                    var urlRedirect = HttpContext.Current.Request.Url.AbsoluteUri.Replace("http", "https");
+
+                    if (ConfigurationManager.AppSettings["forceHttpWWW"] == "true")
+                    {
+                        if (!urlRedirect.Contains("www"))
+                            urlRedirect = urlRedirect.Replace("https://", "https://www.");
+                    }
+
+                    HttpContext.Current.Response.Redirect(urlRedirect);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
     }

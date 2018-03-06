@@ -1,0 +1,4 @@
+﻿			var <#className#>app = new <#className#>App(token);
+			var result<#className#> = <#className#>app.Save(Helper<#className#>Moq.MoqObject(token));
+			<#className#>app.Dispose();
+			data.<#FKeyName#> = result<#className#>.<#KeyName#>;

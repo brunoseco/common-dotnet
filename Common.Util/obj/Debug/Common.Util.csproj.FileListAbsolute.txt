@@ -1,0 +1,11 @@
+C:\Projetos\Common-V2\Main\Common.Util\bin\Debug\Util.dll
+C:\Projetos\Common-V2\Main\Common.Util\bin\Debug\Util.pdb
+C:\Projetos\Common-V2\Main\Common.Util\obj\Debug\Common.Util.csprojResolveAssemblyReference.cache
+C:\Projetos\Common-V2\Main\Common.Util\obj\Debug\Common.Util.csproj.CoreCompileInputs.cache
+C:\Projetos\Common-V2\Main\Common.Util\obj\Debug\Util.dll
+C:\Projetos\Common-V2\Main\Common.Util\obj\Debug\Util.pdb
+C:\Pessoal\common-dotnet\Common.Util\bin\Debug\Util.dll
+C:\Pessoal\common-dotnet\Common.Util\bin\Debug\Util.pdb
+C:\Pessoal\common-dotnet\Common.Util\obj\Debug\Common.Util.csproj.CoreCompileInputs.cache
+C:\Pessoal\common-dotnet\Common.Util\obj\Debug\Util.dll
+C:\Pessoal\common-dotnet\Common.Util\obj\Debug\Util.pdb

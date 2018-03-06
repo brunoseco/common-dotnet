@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="390d0094-f59f-4de8-b191-e4e31bcca51c" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://tellme.fastsolucoes.com.br/wcf/ClassDataService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ClassDataService.wsdl" MetadataType="Wsdl" ID="2bd92d37-ebf5-436d-8350-949435fd496c" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/ClassDataService.svc?wsdl" />
+    <MetadataFile FileName="ClassDataService.xsd" MetadataType="Schema" ID="2145cb81-910e-439f-afbf-92751edcd7fc" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/ClassDataService.svc?xsd=xsd1" />
+    <MetadataFile FileName="ClassDataService1.xsd" MetadataType="Schema" ID="97584f2d-2fb4-4cf1-be4d-e7f05aed2372" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/ClassDataService.svc?xsd=xsd2" />
+    <MetadataFile FileName="ClassDataService.disco" MetadataType="Disco" ID="2b34ba31-dbf6-44f5-aa88-88bc4c115c49" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/ClassDataService.svc?disco" />
+    <MetadataFile FileName="ClassDataService2.xsd" MetadataType="Schema" ID="3248c975-9693-4ffc-a8e4-2682557a8e8b" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/ClassDataService.svc?xsd=xsd0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

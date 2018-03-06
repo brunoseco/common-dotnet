@@ -1,0 +1,36 @@
+﻿(function () {
+    'use strict';
+
+    angular.module("<#contextName#>.Controllers")
+        .controller("<#className#>Controller", <#className#>Controller);
+
+    <#className#>Controller.$inject = ['Crud', '<#className#>Constants', 'Notification','$stateParams','$location']
+
+    function <#className#>Controller(Crud, <#className#>Constants, Notification, $stateParams, $location) {
+
+        var vm = this;
+
+        <#className#>ControllerBase(vm, Crud , $location, {
+            Labels: <#className#>Constants.Labels,
+            Attributes: <#className#>Constants.Attributes,
+			 Create: {
+                urlRedirect:"/<#className#>"
+            },
+            Edit: {
+                urlRedirect:"/<#className#>"
+            },
+        });
+
+		vm.ActionTitle = <#className#>Constants.ActionTitle;
+		vm.ActionDescription = <#className#>Constants.ActionDescription;
+		vm.Labels = <#className#>Constants.Labels;	
+		vm.Attributes = <#className#>Constants.Attributes;	
+		vm.crud.ConfigInPage($stateParams, vm, Notification);
+		vm.openCalendar = function (e, vm, index) {
+            e.preventDefault();
+            e.stopPropagation();
+            vm[index] = true;
+        };
+
+    };
+})();

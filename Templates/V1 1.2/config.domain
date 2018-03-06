@@ -1,0 +1,30 @@
+﻿using Common.Domain;
+using Common.Domain.Interfaces;
+
+namespace <#namespace#>.Domain
+{
+    public abstract class ConfigDomain<#module#> : DomainBase
+    {
+
+        public void Config(Common.Domain.Interfaces.ICache cache)
+        {
+
+        }
+
+        private CurrentUser _userSimple;
+
+        public CurrentUser ValidateAuthSimple(string token, ICache cache)
+        {
+            if (_userSimple.IsNull())
+                _userSimple = base.ValidateAuth(token, cache);
+
+            return _userSimple;
+        }
+
+        public override void Dispose()
+        {
+        
+		}
+		
+    }
+}

@@ -1,0 +1,21 @@
+﻿
+function <#className#>ControllerBase(vm, Crud, customConfig) {
+
+    vm.crud = new Crud.start();
+
+    vm.crud.Config = {
+        resource: "<#className#>",
+        Create: {
+            pathModal: "/view/<#className#>/modal.html",
+        },
+        Edit: {
+            pathModal: "/view/<#className#>/modal.html",
+        },
+    };
+	
+    vm.crud.Config = angular.merge({}, customConfig, vm.crud.Config)
+
+    vm.crud.SetViewModel(vm);
+    vm.crud.Filter();
+
+};

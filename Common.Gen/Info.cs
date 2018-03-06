@@ -14,8 +14,8 @@ namespace Common.Gen
     }
     public class Info
     {
+        public string FieldFilterDefault { get; set; }
 
-        
         public string Table { get; set; }
 
         public string ClassName { get; set; }
@@ -28,11 +28,13 @@ namespace Common.Gen
 
         public int IsKey { get; set; }
 
-        public int isNullable { get; set; }
+        public int IsNullable { get; set; }
 
         public string Type { get; set; }
 
         public string TypeOriginal { get; set; }
+
+        public string TypeCustom { get; set; }
 
         public string Module { get; set; }
 
@@ -48,7 +50,6 @@ namespace Common.Gen
 
         public NavigationType NavigationType { get; set; }
 
-        
-
+        public int Order { get; set; }
     }
 }

@@ -10,6 +10,8 @@ namespace Common.Domain.Extensions
     public class ExpandoObjectExtensions
     {
 
+      
+
         public T Convert<T>(ExpandoObject source, T example) where T : class
         {
             IDictionary<string, object> dict = source;

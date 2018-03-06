@@ -1,0 +1,6 @@
+﻿          <section class="col-md-6">
+            <div class="form-group">
+              <label>{{ ::vm.Labels.<#propertyName#> }} <#labelAux#> </label>
+              <#filterfield#>
+            </div>
+          </section>

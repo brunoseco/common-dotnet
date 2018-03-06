@@ -1,0 +1,45 @@
+﻿using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Common.Domain.Interfaces;
+using Common.Infrastructure.Cache;
+using System.Collections.Generic;
+using Common.Models;
+using <#namespaceDomainSource#>.Filters;
+using Common.Interfaces;
+using <#namespace#>.Dto;
+using <#namespaceDomainSource#>.Domain;
+using Common.Domain;
+using System.Transactions;
+using Common.Infrastructure.Log;
+
+namespace <#namespace#>.Application
+{
+    public partial class <#className#>App : IDisposable
+    {
+        private IRepository<<#className#>> rep<#className#>;
+        private ICache cache;
+        private <#className#> <#className#>;
+
+        public <#className#>App(string token)
+        {
+			this.Init(token);
+        }
+
+		public IEnumerable<string> GetDomainWarning(<#className#>Filter filters = null)
+        {
+            return this.<#className#>.GetDomainWarning(filters.IsNotNull() ? filters : new <#className#>Filter { });
+        }
+
+		public IEnumerable<ValidationConfirm> GetDomainConfirms(<#className#>Filter filters= null)
+        {
+           return this.<#className#>.GetDomainConfirms(filters.IsNotNull() ? filters : new <#className#>Filter { });
+        }
+
+        public void Dispose()
+        {
+            this.<#className#>.Dispose();
+        }
+    }
+}

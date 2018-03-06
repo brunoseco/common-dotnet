@@ -1,0 +1,96 @@
+﻿using System;
+using System.Linq;
+using Common.Test;
+using <#namespace#>.Dto;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Configuration;
+using Common.Authentication.Dto;
+using Common.Domain.CustomExceptions;
+using <#namespaceDomainSource#>.Filters;
+using <#namespace#>.Uri.Api;
+using <#namespaceRoot#>.Custom.Uri.Api;
+using <#namespaceRoot#>.Auth.Infrastructure.User;
+using Common.Models;
+using Cna.Erp.Education.Enums;
+using Cna.Erp.Education.Enums.QueryOptimizerBehavior;
+
+namespace <#namespace#>.Api.Test
+{
+    [TestClass]
+    public partial class UnitTest<#module#><#className#>Api : TestBase
+    {
+		public override void Auth()
+        {
+			var tokenCache = base.tokenCache();
+            if (tokenCache.IsNotNullOrEmpty())
+            {
+                this.token = tokenCache;
+                return;
+            }
+
+            var TesterPassword = ConfigurationManager.AppSettings["TesterPassword"];
+            var TesterEmail = ConfigurationManager.AppSettings["TesterEmail"];
+            var escolaId = Convert.ToInt32(ConfigurationManager.AppSettings["EscolaId"]);
+            var Account = new Account();
+            var credential = new CredentialDto { Email = TesterEmail, Password = TesterPassword };
+            this.token = Account.Login(credential).Token;
+            this.token = Account.ChangeLogin(this.token, TesterEmail, escolaId).Token;
+
+            base.tokenCache(this.token);
+        }
+
+		[TestMethod]
+        public void GivenThe<#className#>WhenGetByFiltersThenReciveStatusCodeOk()
+        {
+            var api = new <#className#>Uri();
+            
+			var response = GetByFilters(api);
+
+            Assert.IsTrue(response.StatusCode == System.Net.HttpStatusCode.OK);
+        }
+
+	    [TestMethod]
+        public void GivenThe<#className#>WhenGetDataListCustomThenReciveStatusCodeOk()
+        {
+            var api = new <#className#>Uri();
+
+            var response = api.GetDataListCustom(base.token, new <#className#>Filter
+            {
+                IsPagination = true,
+                PageIndex = 1,
+                PageSize = 1,
+            });
+
+            Assert.IsTrue(response.StatusCode == System.Net.HttpStatusCode.OK);
+        }
+
+		[TestMethod]
+        public void GivenThe<#className#>WhenGetByIdThenReciveStatusCodeOk()
+        {
+            var api = new <#className#>Uri();
+           
+			var response = GetByFilters(api);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var first = response.DataList.FirstOrDefault();
+                if (first != null)
+                {
+                    var responseOne = api.GetByModel(base.token, new Common.Dto.DtoBase { <#filterByModel#> });
+                    Assert.AreEqual(response.StatusCode , System.Net.HttpStatusCode.OK);
+                }           
+            }
+        }
+
+		private Common.API.HttpResult<Common.Dto.DtoBase> GetByFilters(<#className#>Uri api)
+        {
+            var response = api.Get(base.token, new <#className#>Filter
+            {
+                IsPagination = true,
+                PageIndex = 1,
+                PageSize = 1,
+            });
+            return response;
+        }	
+	}
+}

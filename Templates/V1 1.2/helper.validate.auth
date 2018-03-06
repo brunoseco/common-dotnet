@@ -1,0 +1,28 @@
+﻿using Common.Domain;
+using Common.Domain.Helper;
+using Common.Domain.Interfaces;
+
+namespace <#namespace#>.Domain.Helpers
+{
+    public static class HelperValidateAuth<#module#>
+    {
+        private static string _simple { get { return "{0}-S"; } }
+
+        public static CurrentUser ValidateAuthSimple(string token, ICache cache)
+        {
+            return ValidateAuth(TokenSimple(token), cache);
+        }
+
+        private static CurrentUser ValidateAuth(string token, ICache cache)
+        {
+            return HelperCurrentUser.ValidateAuth(token, cache);
+        }
+
+        public static string TokenSimple(string token)
+        {
+            return string.Format(_simple, token);
+        }
+
+        
+    }
+}

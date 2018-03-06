@@ -23,6 +23,13 @@ namespace Common.API
         public IEnumerable<string> Warnings { get; set; }
         public IEnumerable<ValidationConfirm> Confirms { get; set; }
 
+        protected ErrorMap ErrorMap { get; set; }
+
+        public void SetConfigMapErrors(IDictionary<string, string> _errorsMap)
+        {
+            ErrorMap = new ErrorMap(_errorsMap);
+        }
+
     }
     public class HttpResult<T> : HttpResult
     {
@@ -30,6 +37,7 @@ namespace Common.API
         public HttpResult()
         {
             base.Summary = new Summary();
+            base.ErrorMap = new ErrorMap();
         }
 
         public IEnumerable<T> DataList { get; set; }
@@ -60,16 +68,19 @@ namespace Common.API
 
         public HttpResult<T> Error(IList<ValidationResult> erros)
         {
+
             this.StatusCode = HttpStatusCode.InternalServerError;
-            this.Errors = erros.Select(_ => _.ErrorMessage);
+            this.Errors = erros.Select(_ => base.ErrorMap.GetTraduction(_.ErrorMessage));
 
             return this;
         }
 
         public HttpResult<T> Error(string erro)
         {
+
+            var _erro = base.ErrorMap.GetTraduction(erro);
             this.StatusCode = HttpStatusCode.InternalServerError;
-            this.Errors = new List<string> { erro };
+            this.Errors = new List<string> { _erro };
             return this;
         }
 

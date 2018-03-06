@@ -1,0 +1,56 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Configuration;
+using System.Data.Entity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Common.Infrastructure.ORM.Context;
+using Common.Infrastructure.Log;
+using <#namespace#>.Infrastructure.ORM.Maps;
+using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Data.Entity.Infrastructure.MappingViews;
+using <#namespace#>.Infrastructure.ORM.Contexto;
+using Common.Domain.Interfaces;
+
+//[assembly: DbMappingViewCacheType(typeof(DbContext<#module#>), typeof(MappingViewCache<#module#>Genereted))]
+namespace <#namespace#>.Infrastructure.ORM.Contexto
+{
+    public class DbContext<#module#> : DbContext, IUnitOfWork<DbContext<#module#>>,IUnitOfWork
+    {
+        private static string _connectionString;
+        static DbContextCore()
+        {
+            Database.SetInitializer<DbContext<#module#>>(null);
+            _connectionString = ConfigurationManager.ConnectionStrings["<#module#>"].ConnectionString;
+        }
+
+        public DbContextCore(ILog log)
+            : base(_connectionString)
+        {
+			base.Database.Log = log.Info;
+        }
+
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+
+			modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+
+<#mappers#>
+
+        }
+
+
+        public void Commit()
+        {
+            base.SaveChanges();
+        }
+
+		public string ConnectionStringComplete()
+        {
+            return _connectionString;
+        }
+    }
+}

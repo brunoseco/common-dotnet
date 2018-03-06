@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="5cebb4e5-09e4-4759-8a11-d29c201a7238" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://tellme.fastsolucoes.com.br/wcf/UserDataService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="UserDataService.wsdl" MetadataType="Wsdl" ID="89caee01-676b-4db7-b54e-d7a8e7248492" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/UserDataService.svc?wsdl" />
+    <MetadataFile FileName="UserDataService.xsd" MetadataType="Schema" ID="df42ba68-9905-4e1a-acc4-766a873dabe5" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/UserDataService.svc?xsd=xsd0" />
+    <MetadataFile FileName="UserDataService1.xsd" MetadataType="Schema" ID="f2e41189-aa8b-4641-b38a-a1b13f7c1992" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/UserDataService.svc?xsd=xsd1" />
+    <MetadataFile FileName="UserDataService2.xsd" MetadataType="Schema" ID="0870e12a-9b02-4d8a-bd48-b9f4f0b707ab" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/UserDataService.svc?xsd=xsd2" />
+    <MetadataFile FileName="UserDataService3.xsd" MetadataType="Schema" ID="12cbb9ca-43c7-4102-863a-7762dd08cd1d" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/UserDataService.svc?xsd=xsd3" />
+    <MetadataFile FileName="UserDataService.disco" MetadataType="Disco" ID="ef5f9d31-05b8-4487-b060-affa8db0e658" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/UserDataService.svc?disco" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

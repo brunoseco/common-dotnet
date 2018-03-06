@@ -1,0 +1,224 @@
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Common.Models;
+using Common.Domain;
+using Common.Interfaces;
+using Common.Domain.Interfaces;
+using Common.Domain.CustomExceptions;
+using Cna.Erp.Education.Enums;
+using Cna.Erp.Education.Enums.QueryOptimizerBehavior;
+using Common.Cna.Domain.Helpers;
+using Cna.Erp.Education.Enums.Behavior.Core;
+using Cna.Erp.Core.ModelSummary;
+using <#namespace#>.Filters;
+
+namespace <#namespace#>.Domain.Models.<#boundedContext#>
+{
+    public partial class <#className#> : <#namespaceDomainSource#>.Domain.<#className#>Base
+    {
+        private IRepository<<#className#>> repQuery;
+        public <#className#>() { }
+        public <#className#>(IRepository<Cna.Erp.Core.Domain.<#className#>> rep, ICache cache)
+            : base(rep, cache)
+        {
+
+        }
+
+        public <#className#>(IRepository<<#className#>> repQuery, ICache cache)
+        {
+            this.repQuery = repQuery;
+            this.cache = cache;
+			this.validationHelper = new ValidationHelper();
+        }
+
+        #region Navigation
+
+
+        #endregion
+
+        #region Calculate Props
+
+
+        #endregion
+
+        #region Get Methods
+
+		public virtual <#className#> GetOne(<#className#> model)
+        {
+            return this.Get(model);
+        }
+
+        public virtual <#className#> Get(<#className#> model)
+        {			
+            return this.repQuery.GetAll(DataAgregation(new <#className#>Filter
+            {
+                QueryOptimizerBehavior = model.QueryOptimizerBehavior
+
+            }))<#WhereSingle#>.SingleOrDefault();
+        }
+
+        public virtual IQueryable<<#className#>> GetByFilters(<#className#>Filter filters, params Expression<Func<<#className#>, object>>[] includes)
+        {
+			 return this.repQuery
+                .GetAll(includes)
+                .SimpleFilters(filters);
+
+        }
+
+        public virtual async Task<IEnumerable<DataItem>> GetDataItem(<#className#>Filter filters)
+        {
+            var dataList = this.GetByFilters(filters)
+                .Select(_ => new DataItem
+                {
+                    Id = _.<#className#>Id.ToString(),
+                });
+
+            return dataList.ToList().OrderBy(_ => _.Name);
+        }
+
+        public virtual Summary GetSummary(IQueryable<<#className#>> result)
+        {
+            return new Summary
+            {
+                Total = this.TotalCount
+            };
+
+        }
+
+		public async virtual Task<Summary> GetSummaryDataListCustom(IQueryable<dynamic> result)
+        {
+            return new Summary
+            {
+               Total = await this.rep.CountAsync(result)
+            };
+        }
+
+        public virtual dynamic GetDataCustom(Filters.<#className#>Filter filters)
+        {
+			var result = this.GetByFilters(filters);
+
+            return result.Select(_ => new
+            {
+
+            }).SingleOrDefault();
+        }
+
+		public virtual IEnumerable<dynamic> GetDataListCustom(<#className#>Filter filters)
+        {
+            var result = this.GetByFilters(filters);
+
+            return result.Select(_ => new
+            {
+				<#KeyName#> = _.<#KeyName#>	
+            });
+        }
+
+        #endregion
+
+        #region Pagination
+
+        public virtual PaginateResult<dynamic> GetDataListCustomPaging(<#className#>Filter filters)
+        {
+            var result = this.GetDataListCustom(filters).AsQueryable();
+            if (filters.IsOrderByDomain)
+                return this.Paging(filters, result);
+
+            return this.Paging(filters, result, result.OrderByDynamic(filters));
+        }
+
+        public virtual PaginateResult<<#className#>> GetByFiltersPaging(<#className#>Filter filters, params System.Linq.Expressions.Expression<Func<<#className#>, object>>[] includes)
+        {
+            var result = GetByFilters(filters, includes);
+
+            if (filters.IsOrderByDynamic)
+                return this.Paging(filters, result, result.OrderByDynamic(filters));
+
+            if (filters.IsOrderByDomain)
+                return this.Paging(filters, result);
+
+            return this.Paging(filters, result, result.OrderByDescending(_ => _.<#KeyName#>));
+        }
+
+        protected PaginateResult<<#className#>> PagingAndDefineFields(<#className#>Filter filters, IQueryable<<#className#>> queryFilter)
+        {
+            var queryOptimize = this.DefineFieldsGetByFilters(queryFilter, filters.QueryOptimizerBehavior);
+
+            if (!filters.IsOrderByDomain)
+                queryOptimize = queryOptimize.OrderByDynamic(filters);
+
+            var paginateResult = this.Paging(filters, queryOptimize);
+            var queryMapped = this.MapperGetByFiltersToDomainFields(queryFilter, paginateResult.ResultPaginatedData, filters.QueryOptimizerBehavior);
+
+            return new PaginateResult<<#className#>>
+            {
+                TotalCount = paginateResult.TotalCount,
+                ResultPaginatedData = queryMapped,
+                Source = queryFilter
+            };
+        }
+
+        #endregion
+
+        #region Defined Fields
+
+        protected IQueryable<dynamic> DefineFieldsGetByFilters(IQueryable<<#className#>> source, string queryOptimizerBehavior)
+        {
+             if (queryOptimizerBehavior == "queryOptimizerBehavior")
+            {
+                return source.Select(_ => new
+                {
+
+                });
+            }
+            return source;
+        }
+
+        protected IQueryable<<#className#>> MapperGetByFiltersToDomainFields(IQueryable<<#className#>> source, IEnumerable<dynamic> result, string queryOptimizerBehavior)
+        {
+			if (queryOptimizerBehavior == "queryOptimizerBehavior")
+            {
+                return result.Select(_ => new <#className#>
+                {
+
+                }).AsQueryable();
+            }
+			return result.Select(_=> (<#className#>)_).AsQueryable();
+        }
+
+
+        #endregion
+
+        #region Agregation
+
+        protected Expression<Func<<#className#>, object>>[] DataAgregation(Filter filter)
+        {
+            return DataAgregation(new Expression<Func<<#className#>, object>>[] { }, filter);
+        }
+
+        protected Expression<Func<<#className#>, object>>[] DataAgregation(Expression<Func<<#className#>, object>>[] includes, Filter filter)
+        {
+            return includes;
+        }
+
+        #endregion
+
+        #region Helpers
+
+        #endregion
+
+        public override void Dispose()
+        {
+            if (this.repQuery != null)
+                this.repQuery.Dispose();
+        }
+
+        ~<#className#>()
+        {
+
+        }
+    }
+}

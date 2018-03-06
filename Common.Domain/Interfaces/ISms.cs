@@ -16,7 +16,7 @@ namespace Common.Domain.Interfaces
         TipoSMS Tipo { get; set; }
         string PhoneNumberFrom { get; set; }
 
-        void Add(string phoneNumber, string message);
+        void Add(string phoneNumber, string content);
 
         RetornoSMS Send();
 

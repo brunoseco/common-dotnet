@@ -46,6 +46,11 @@ public static class MathExstensions
         return value < 0 ? value : value * -1;
     }
 
+    public static int ToNegative(this int value)
+    {
+        return value < 0 ? value : value * -1;
+    }
+
     public static decimal ToPositive(this decimal value)
     {
         return value < 0 ? value * -1 : value;
@@ -67,7 +72,7 @@ public static class MathExstensions
             return value;
 
         var dateIniRate = rates.Min(_ => _.Key);
-        var dateEndRate = rates.Max(_ => _.Key).EndMonthDate();
+        var dateEndRate = rates.Max(_ => _.Key).LastDayInMonth();
 
         deadline = deadline.AddDays(1);
         var date = deadline > dateIniRate ? deadline : dateIniRate;

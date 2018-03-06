@@ -1,0 +1,21 @@
+﻿using <#namespaceDomainSource#>.Domain;
+using <#namespace#>.Dto;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+
+namespace <#namespace#>.Application.Config
+{
+    public class DominioToDtoProfile<#module#> : AutoMapper.Profile
+    {
+
+
+        protected override void Configure()
+        {
+
+<#registers#>
+
+        }
+    }
+}

@@ -10,6 +10,9 @@ namespace Common.Interfaces
     {
 
         int MinutesInterval { get; set; }
+
+        DateTime NextExecute { get; set; }
+
         void ConfigSchadule();
 
     }

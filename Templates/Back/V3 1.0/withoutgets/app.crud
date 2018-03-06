@@ -1,0 +1,107 @@
+﻿using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Common.Domain.Interfaces;
+using Common.Infrastructure.Cache;
+using System.Collections.Generic;
+using Common.Models;
+using <#namespaceDomainSource#>.Filters;
+using Common.Interfaces;
+using <#namespace#>.Dto;
+using <#namespaceDomainSource#>.Domain;
+using Common.Domain;
+using System.Transactions;
+using Common.Infrastructure.Log;
+
+namespace <#namespace#>.Application
+{
+    public partial class <#className#>App : IDisposable
+    {
+        private IRepository<<#className#>> rep<#className#>;
+        private ICache cache;
+        private <#className#> <#className#>;
+
+        public <#className#>App(string token)
+        {
+			this.Init(token);
+        }
+
+		public IEnumerable<string> GetDomainWarning(<#className#>Filter filters = null)
+        {
+            return this.<#className#>.GetDomainWarning(filters.IsNotNull() ? filters : new <#className#>Filter { });
+        }
+
+		public IEnumerable<ValidationConfirm> GetDomainConfirms(<#className#>Filter filters= null)
+        {
+           return this.<#className#>.GetDomainConfirms(filters.IsNotNull() ? filters : new <#className#>Filter { });
+        }
+
+		public Common.Dto.DtoBase Save(Common.Dto.DtoBase dto)
+        {
+			var result = default(Common.Dto.DtoBase);
+			using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+            {
+				var model =  AutoMapper.Mapper.Map<Common.Dto.DtoBase, <#className#>>(dto);
+				var data = this.<#className#>.Save(model);
+				result =  this.MapperDomainToDtoOnSave(data, dto);
+				transaction.Complete();
+			}
+			return result;
+        }
+
+		public Common.Dto.DtoBase Save(Common.Dto.DtoBase dto)
+        {
+			var result = default(Common.Dto.DtoBase);
+			using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+            {
+				var model =  AutoMapper.Mapper.Map<Common.Dto.DtoBase, <#className#>>(dto);
+				var data = this.<#className#>.Save(model);
+				result =  this.MapperDomainToDtoOnSave(data, dto);
+				transaction.Complete();
+			}
+			return result;
+        }
+
+		public Common.Dto.DtoBase SavePartial(Common.Dto.DtoBase dto)
+        {
+			var result = default(Common.Dto.DtoBase);
+			using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))            
+			{
+				var model =  AutoMapper.Mapper.Map<Common.Dto.DtoBase, <#className#>>(dto);
+				var data = this.<#className#>.SavePartial(model);
+				result =  this.MapperDomainToDtoOnSave(data, dto);
+				transaction.Complete();
+			}
+			return result;
+        }
+
+		public IEnumerable<Common.Dto.DtoBase> Save(IEnumerable<Common.Dto.DtoBase> dtos)
+        {
+			var result = default(IEnumerable<Common.Dto.DtoBase>);
+			using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+            {
+				var models = AutoMapper.Mapper.Map<IEnumerable<Common.Dto.DtoBase>, IEnumerable<<#className#>>>(dtos);
+				var data = this.<#className#>.Save(models);
+				result =  this.MapperDomainToDtoOnSave(data, dtos);
+				transaction.Complete();
+			}
+			return result;
+        }
+
+		public void Delete(Common.Dto.DtoBase dto)
+        {
+			using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+            {
+				var model =  AutoMapper.Mapper.Map<Common.Dto.DtoBase, <#className#>>(dto);
+				this.<#className#>.Delete(model);
+				transaction.Complete();
+			}
+        }
+
+        public void Dispose()
+        {
+            this.<#className#>.Dispose();
+        }
+    }
+}

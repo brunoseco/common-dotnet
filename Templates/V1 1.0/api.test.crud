@@ -1,0 +1,94 @@
+﻿using System;
+using System.Linq;
+using Common.Test;
+using <#namespace#>.Dto;
+using <#namespace#>.Application;
+using <#namespace#>.Application.Test;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Configuration;
+using Common.Authentication.Dto;
+using Common.Domain.CustomExceptions;
+using <#namespaceDomainSource#>.Filters;
+using <#namespace#>.Uri.Api;
+using <#namespaceRoot#>.Custom.Uri.Api;
+using Common.Models;
+using System.Collections.Generic;
+using <#namespaceRoot#>.Auth.Infrastructure.User;
+
+namespace <#namespace#>.Api.Test
+{
+    [TestClass]
+    public partial class UnitTest<#className#>Api : TestBase
+    {
+		public override void Auth()
+        {
+
+            var TesterPassword = ConfigurationManager.AppSettings["TesterPassword"];
+            var TesterEmail = ConfigurationManager.AppSettings["TesterEmail"];
+
+            var Account = new Account();
+            var credential = new CredentialDto { Email = TesterEmail, Password = TesterPassword };
+            this.token = Account.Login(credential).Token;        }
+
+		[TestMethod]
+        public void WhenGetByTokenThenReciveStatusCodeOk()
+        {
+            var api = new <#className#>Uri();
+           	
+			var response = api.Get(base.token,new <#className#>Filter 
+            { 
+			    IsPagination = true
+            });
+
+            Assert.IsTrue(response.StatusCode == System.Net.HttpStatusCode.OK);
+        }
+
+
+		[TestMethod]
+        public void WhenPostThenReciveStatusCodeOk()
+        {
+            var api = new <#className#>Uri();
+            var response = api.Post(base.token, Helper<#className#>Moq.MoqObject(base.token));
+            Assert.IsTrue(response.StatusCode == System.Net.HttpStatusCode.OK);
+			Assert.IsNotNull(response.Data);
+        }
+
+		[TestMethod]
+        public void WhenPutThenReciveStatusCodeOk()
+        {
+            var api = new <#className#>Uri();
+            var response = api.Put(base.token, Helper<#className#>Moq.MoqObject(base.token));
+            Assert.IsTrue(response.StatusCode == System.Net.HttpStatusCode.OK);
+			Assert.IsNotNull(response.Data);
+        }
+
+		[TestMethod]
+        public void WhenPostManyThenReciveStatusCodeOk()
+        {
+			var registroA = Helper<#className#>Moq.MoqObject(base.token);
+            var registroB = Helper<#className#>Moq.MoqObject(base.token);
+
+			var many = new List<<#className#>Dto>() 
+            { 
+                registroA,
+                registroB  
+            };
+
+			var api = new <#className#>Uri();
+            var response = api.Post(base.token,many);
+            Assert.IsTrue(response.StatusCode == System.Net.HttpStatusCode.OK);
+			Assert.IsNotNull(response.DataList);
+        }
+
+		[TestMethod]
+        public void WhenDeleteThenReciveStatusCodeOk()
+        {
+            var api = new <#className#>Uri();
+			var responsePost = api.Post(base.token, Helper<#className#>Moq.MoqObject(base.token));
+            var responseDelete = api.Delete(base.token, responsePost.Data);
+            Assert.IsTrue(AssertDeleteSuccessOrConflited(responseDelete.StatusCode,responseDelete.Errors));
+			
+        }
+	
+	}
+}

@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -48,12 +49,13 @@
     <Compile Include="Extensions\DictonaryExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\Transfer.cs" />
+    <Compile Include="Interfaces\IAppSync.cs" />
     <Compile Include="Interfaces\ISchadule.cs" />
     <Compile Include="Interfaces\ITask.cs" />
-    <Compile Include="Interfaces\ITaskSynk.cs" />
     <Compile Include="Interfaces\IAppCrud.cs" />
     <Compile Include="Interfaces\IApp.cs" />
     <Compile Include="Interfaces\IFilter.cs" />
+    <Compile Include="Models\AttachmentConfig.cs" />
     <Compile Include="Models\DataItem.cs" />
     <Compile Include="Models\DataItemFilter.cs" />
     <Compile Include="Models\DataItemGroup.cs" />
@@ -66,8 +68,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "$(SolutionDir)\..\Lib\$(TargetName).dll"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

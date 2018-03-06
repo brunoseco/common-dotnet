@@ -1,0 +1,21 @@
+﻿		[ActionName("DefaultAction")]
+		public async Task<HttpResponseMessage> Get(<#KeyType#> id)
+		{
+			try
+			{
+				var token = HelperAuth.GetHeaderToken();
+				this.app = new <#inheritClassName#>App(token);
+				var data = await this.app.Get(new <#className#>Dto { <#KeyName#> = id});
+				this.result.Success(data);
+				return Request.CreateResponse(this.result.StatusCode, this.result);
+
+			}
+			catch (Exception ex)
+			{
+                this.result.ReturnCustomException(ex, id);
+				return Request.CreateResponse(this.result.StatusCode, this.result);
+
+			}
+
+		}
+

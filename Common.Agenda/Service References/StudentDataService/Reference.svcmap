@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="ab015f5d-08c1-4db8-8d73-9ae5bdf8b2b9" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://tellme.fastsolucoes.com.br/wcf/StudentDataService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="StudentDataService.xsd" MetadataType="Schema" ID="d8994f1d-64e9-4d4d-bfb9-4b0d05a50ead" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/StudentDataService.svc?xsd=xsd1" />
+    <MetadataFile FileName="StudentDataService.disco" MetadataType="Disco" ID="6acbdc25-f5f7-475c-b6b2-e63b72d7980d" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/StudentDataService.svc?disco" />
+    <MetadataFile FileName="StudentDataService1.xsd" MetadataType="Schema" ID="80436bf9-1118-4c0d-97e5-c7ec84a48829" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/StudentDataService.svc?xsd=xsd3" />
+    <MetadataFile FileName="StudentDataService2.xsd" MetadataType="Schema" ID="622c0f09-8440-4204-ac19-6c8f415a2068" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/StudentDataService.svc?xsd=xsd2" />
+    <MetadataFile FileName="StudentDataService.wsdl" MetadataType="Wsdl" ID="154eebbb-d3df-4d8c-992e-e48e8eaed548" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/StudentDataService.svc?wsdl" />
+    <MetadataFile FileName="StudentDataService3.xsd" MetadataType="Schema" ID="7f91ab92-fef2-4f07-ac72-d995774e86bc" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/StudentDataService.svc?xsd=xsd0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

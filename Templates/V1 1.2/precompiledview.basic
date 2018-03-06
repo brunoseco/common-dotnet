@@ -1,0 +1,26 @@
+﻿using Cna.BI.<#module#>.Infrastructure.ORM.Contexto;
+using Common.Infrastructure.Log;
+using InteractivePreGeneratedViews;
+using System;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Infrastructure.MappingViews;
+using System.IO;
+
+public class MappingViewCache<#module#>Genereted 
+{
+
+    public static void LoadPreCompiledViews()
+    {
+		ViewCacheFactory();
+    }
+
+	private static void ViewCacheFactory()
+    {
+		var log = FactoryLog.GetInstace();
+        var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"MappingViewCache<#module#>Genereted.xml");
+        var ctx = new DbContext<#module#>(log);
+		InteractiveViews.SetViewCacheFactory(ctx, new FileViewCacheFactory(path));
+    }
+
+}
+

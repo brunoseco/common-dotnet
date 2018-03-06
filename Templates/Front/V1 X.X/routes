@@ -1,0 +1,33 @@
+﻿(function () {
+    'use strict';
+
+    angular.module("<#namespace#>.config")
+        .config(routeConfig);
+
+    routeConfig.$inject = ['$stateProvider', '$urlRouterProvider'];
+
+    function routeConfig($stateProvider, $urlRouterProvider) {
+	
+        var _isAuth = ["$q", function ($q) {
+            var token = window.localStorage.getItem("TOKEN_AUTH");
+            if (token == null) {
+                return $q.reject({ authenticated: false });
+            } else {
+                return $q.when({ authenticated: true });
+            }
+        }];
+
+        $stateProvider
+
+            <#RouteViewItem#>
+
+        function MakeUrl(url, noCache) {
+            if (noCache)
+                return url;
+
+            return url + '?v=' + Math.random();
+        }
+
+    };
+
+})();

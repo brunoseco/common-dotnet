@@ -1,0 +1,173 @@
+﻿using System;
+using System.Linq;
+using Common.Domain;
+using Common.Domain.Interfaces;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using <#namespaceDomainSource#>.Filters;
+using Common.Models;
+using System.Threading.Tasks;
+
+namespace <#namespace#>.Domain
+{
+	public partial class <#className#> : DomainBase,<#IAudit#> IDisposable, <#IDomain#><<#className#>>
+	{
+        protected IRepository<<#className#>> rep;
+		protected ICache cache;
+        public <#className#>(IRepository<<#className#>> rep, ICache cache):this()
+        {
+            this.rep = rep;
+            this.cache = cache;
+			this.Init();
+        }
+
+<#property#>
+		
+		public virtual void Warnings(<#className#>Filter filters)
+        {
+            ValidationHelper.AddDomainWarning<<#className#>>("");
+        }
+
+        public IQueryable<<#className#>> GetAll(params Expression<Func<<#className#>, object>>[] includes)
+        {
+			this.ValidateAuth(base.token,this.cache);
+            return this.rep.GetAll(includes);
+        }
+		
+		public <#className#> GetFromContext(<#className#> model)
+        {
+			this.ValidateAuth(base.token,this.cache);
+			return this.rep.Get(<#KeyNames#>);
+        }
+
+		public int Total()
+        {
+			this.ValidateAuth(base.token,this.cache);
+            return this.rep.GetAll().Count();
+        }
+
+		protected IQueryable<<#className#>> SimpleFilters(<#className#>Filter filters,IQueryable<<#className#>> queryBase)
+        {
+
+			var queryFilter = queryBase;
+
+<#filtersExpressions#>
+
+            return queryFilter;
+        }
+
+		public virtual IEnumerable<dynamic> GetDataListCustom(<#className#>Filter filters)
+        {
+            var result = this.GetByFilters(filters);
+
+            return result.Select(_ => new
+            {
+				CustomFieldOrder =_.<#KeyName#>,
+				<#KeyName#> = _.<#KeyName#>	
+            });
+        }
+		
+		public virtual dynamic GetDataCustom(<#className#>Filter filters)
+        {
+            var result = this.GetByFilters(filters);
+
+            return result.Select(_ => new
+            {
+				<#KeyName#> = _.<#KeyName#>	
+            }).SingleOrDefault();
+        }
+
+		public virtual Summary GetSummaryDataListCustom(IEnumerable<dynamic> result)
+        {
+            return new Summary
+            {
+                Total = result.Count()
+            };
+        }
+
+		protected virtual bool Continue(<#className#> model, <#className#> modelOld)
+        {
+            return true;
+        }
+
+		protected virtual void ConfigMessageDomainConfirm(<#className#> model)
+        {
+            ValidationHelper.AddDomainConfirm<<#className#>>("Realmente deseja realizar essa operação.");
+        }
+
+		protected virtual <#className#> UpdateDefault(<#className#> model,<#className#> modelOld)
+		{
+			var alvo = this.GetFromContext(model);
+            model.TransferTo(alvo);
+            this.rep.Update(alvo, modelOld);
+			return model;
+		}
+
+		protected <#className#> SaveDefault(<#className#> model, bool validation = true, bool questionToContinue = true)
+        {
+            var user = this.ValidateAuth(base.token, this.cache);
+            var modelOld = this.Get(model);
+            var isNew = modelOld.IsNull();
+
+			if (questionToContinue)
+            {
+                if (Continue(model, modelOld) == false)
+                {
+                    ConfigMessageDomainConfirm(model);
+                    return model;
+                }
+            }
+
+			this.SetInitialValues(model);
+			<#callAudit#>
+            ValidationHelper.Validate<<#className#>>(model);
+            this.ValidationReletedClasses(model, user, modelOld);
+            if (validation) ValidationHelper.ValidateAll();
+
+            this.DeleteCollectionsOnSave(model);
+
+            if (isNew)
+                this.rep.Add(model);
+            else
+				this.UpdateDefault(model, modelOld);
+           
+		    this.ClearCache();
+            return model;
+        }
+
+		public virtual <#className#> SavePartial(<#className#> model)
+        {
+  		    model = SaveDefault(model, false);
+			this.rep.Commit();
+			return model;
+        }
+		public virtual void DeleteFromRepository(<#className#> alvo)
+        {
+            this.rep.Delete(alvo);
+			this.ClearCache();
+        }
+
+		public virtual void ClearCache()
+        {
+			if (this.cache.IsNotNull())
+            {
+                var tag = this.cache.Get("<#className#>") as List<string>;
+				if (tag.IsNull()) return;
+                foreach (var item in tag)
+                {
+                    this.cache.Remove(item);    
+                }
+                this.cache.Remove("<#className#>");
+            }
+            
+        }
+
+		private Expression<Func<<#className#>, object>>[] DataAgregationBehaviorDefault(Expression<Func<<#className#>, object>>[] includes)
+        { 
+            return includes;
+        }
+
+<#audit#>
+	
+	}
+}

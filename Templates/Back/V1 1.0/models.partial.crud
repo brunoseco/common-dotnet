@@ -1,0 +1,142 @@
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Common.Models;
+using Common.Domain;
+using <#namespaceDomainSource#>.Filters;
+using Common.Interfaces;
+using Common.Domain.Interfaces;
+using Common.Domain.CustomExceptions;
+
+namespace <#namespace#>.Domain
+{	
+	[MetadataType(typeof(<#className#>Validation))]
+	public partial class <#className#> : IDataAgregation<<#className#>>
+	{
+		public <#className#>()
+        {
+        }
+		public ValidationHelper ValidationHelper = new ValidationHelper();
+
+		<#propertysNav#>
+		
+		public <#className#> Get(<#className#> model)
+        {
+			this.ValidateAuth(base.token,this.cache);
+            return this.rep.GetAll(DataAgregation(new <#className#>Filter
+            {
+                QueryOptimizerBehavior = model.QueryOptimizerBehavior
+
+            }))<#WhereSingle#>.SingleOrDefault();
+        }
+
+		public IQueryable<<#className#>> GetByFilters(<#className#>Filter filters, params Expression<Func<<#className#>, object>>[] includes)
+        {
+            this.ValidateAuth(base.token, this.cache);
+			var queryBase = this.rep.GetAllAsNoTracking(includes);
+			var queryFilter = queryBase;
+			
+			queryFilter = this.SimpleFilters(filters, queryBase);
+
+			//Filter Customizados
+
+            return queryFilter;
+        }
+
+		public IEnumerable<DataItem> GetDataItem(<#className#>Filter filters)
+		{
+			var dataList = this.GetByFilters(filters)
+				.Select(_ => new DataItem
+				{
+					Id = _.<#KeyName#>.ToString(),
+				});
+
+			return dataList.ToList();
+		}
+
+		public Common.Models.Summary GetSummary(IQueryable<<#className#>> result)
+		{
+			return new Common.Models.Summary
+            {
+                Total = 0
+            };
+		}
+
+		public <#className#> Save()
+        {
+            return Save(this);
+        }
+
+		public <#className#> Save(<#className#> model)
+        {
+			model = SaveDefault(model);
+            this.rep.Commit();
+            return model;
+        }
+
+		public IEnumerable<<#className#>> Save(IEnumerable<<#className#>> models)
+        {
+            var modelsInserted = new List<<#className#>>();
+            foreach (var item in models)
+            {
+                 modelsInserted.Add(SaveDefault(item));
+            }
+
+            this.rep.Commit();
+            return modelsInserted;
+        }
+
+		public void Delete(<#className#> model)
+        {
+			this.ValidateAuth(base.token,this.cache);
+			
+            if (model.IsNull())
+                throw new CustomBadRequestException("Delete sem parametros");
+
+            var alvo = this.Get(model);
+            this.DeleteFromRepository(alvo);
+            this.rep.Commit();
+        }
+
+		private void SetInitialValues(<#className#> model)
+        {
+		    
+
+        }
+		
+		private void ValidationReletedClasses(<#className#> model, CurrentUser user, <#className#> modelOld)
+        {
+
+		}
+
+		private void DeleteCollectionsOnSave(<#className#> model)
+        { 
+        
+        }
+
+		public Expression<Func<<#className#>, object>>[] DataAgregation(Filter filter)
+        {
+            return DataAgregation(new Expression<Func<<#className#>, object>>[] { }, filter);
+        }
+
+        public Expression<Func<<#className#>, object>>[] DataAgregation(Expression<Func<<#className#>, object>>[] includes, Filter filter)
+        {
+            return this.DataAgregationBehaviorDefault(includes);
+            
+        }
+
+
+		public override void Dispose()
+        {
+			if (this.rep != null)
+				this.rep.Dispose();
+        }
+
+		~<#className#>() {
+            
+        }
+
+	}
+}

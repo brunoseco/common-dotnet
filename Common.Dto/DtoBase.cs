@@ -14,6 +14,10 @@ namespace Common.Dto
         public string ConfirmationResponseBehavior { get; set; }
 
         public string QueryOptimizerBehavior { get; set; }
-        
+
+        public object Parameter { get; set; }
+
+        public IEnumerable<object> Parameters { get; set; }
+
     }
 }

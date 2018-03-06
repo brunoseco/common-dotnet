@@ -1,0 +1,10 @@
+C:\Projetos\Common-V2\Main\Common.Dto\bin\Debug\Common.Dto.dll
+C:\Projetos\Common-V2\Main\Common.Dto\bin\Debug\Common.Dto.pdb
+C:\Projetos\Common-V2\Main\Common.Dto\obj\Debug\Common.Dto.csproj.CoreCompileInputs.cache
+C:\Projetos\Common-V2\Main\Common.Dto\obj\Debug\Common.Dto.dll
+C:\Projetos\Common-V2\Main\Common.Dto\obj\Debug\Common.Dto.pdb
+C:\Pessoal\common-dotnet\Common.Dto\bin\Debug\Common.Dto.dll
+C:\Pessoal\common-dotnet\Common.Dto\bin\Debug\Common.Dto.pdb
+C:\Pessoal\common-dotnet\Common.Dto\obj\Debug\Common.Dto.csproj.CoreCompileInputs.cache
+C:\Pessoal\common-dotnet\Common.Dto\obj\Debug\Common.Dto.dll
+C:\Pessoal\common-dotnet\Common.Dto\obj\Debug\Common.Dto.pdb

@@ -1,0 +1,35 @@
+<ol class="breadcrumb hidden-xs">
+    <li>Cadastro</li>
+    <li class="active"><#classNameFormated#></li>
+</ol>
+<br>
+<div class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="btn-group pull-right" style="padding-bottom:10px;">
+                <a href="javascript:history.back()" class="btn btn-primary btn-sm" data-original-title="" title=""><i class="fa fa-reply"></i> Voltar</a>
+                <a class="btn btn-success btn-sm" (click)="saveInstance.ExecuteCreate();"><i class="fa fa-plus"></i> Cadastrar</a>
+            </div>
+        </div>
+    </div>
+
+    <<#classNameLower#>-filter (instance)="filterInstance = $event"></<#classNameLower#>-filter>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Resultado</div>
+                <div class="table-responsive">
+                    <<#classNameLower#>-grid [dataList]="filterInstance.dataList" [filterInstance]="filterInstance" [saveInstance]="saveInstance" [deleteInstance]="deleteInstance"></<#classNameLower#>-grid>
+                </div>
+                <div class="panel-footer text-center">
+                    <make-pagination [filterInstance]="filterInstance"></make-pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<<#classNameLower#>-save (onSave)="filterInstance.ExecuteFilter()" (instance)="saveInstance = $event"></<#classNameLower#>-save>
+
+<<#classNameLower#>-delete (onDelete)="filterInstance.ExecuteFilter()" (instance)="deleteInstance = $event"></<#classNameLower#>-delete>

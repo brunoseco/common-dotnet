@@ -48,14 +48,18 @@
     <OutputPath>bin\Local\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Linq.Dynamic, Version=1.0.5840.25917, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Linq.Dynamic.1.0.6\lib\net40\System.Linq.Dynamic.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Linq.Dynamic, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.4\lib\net40\System.Linq.Dynamic.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -65,6 +69,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attribute\RequiredAllowZeroAttribute.cs" />
+    <Compile Include="Localization.cs" />
+    <Compile Include="CurrentUserCache.cs" />
     <Compile Include="DomainSteps.cs" />
     <Compile Include="Enums\EDayOfWeek.cs" />
     <Compile Include="Enums\TipoSMS.cs" />
@@ -78,11 +84,15 @@
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\ExpandoObjectExtensions.cs" />
     <Compile Include="Extensions\Includes.cs" />
+    <Compile Include="Extensions\JsonConvertExtensions.cs" />
     <Compile Include="Extensions\MatExtensions.cs" />
     <Compile Include="Extensions\DomainValidation.cs" />
+    <Compile Include="Extensions\ObjectExtensionscs.cs" />
     <Compile Include="Extensions\ReflectionExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\Transfer.cs" />
     <Compile Include="Extensions\ValidationExtensions.cs" />
+    <Compile Include="HelperCmd.cs" />
     <Compile Include="Helper\HelperCurrentUser.cs" />
     <Compile Include="Interfaces\IAccount.cs" />
     <Compile Include="Interfaces\IAudit.cs" />
@@ -92,9 +102,13 @@
     <Compile Include="CustomExceptions\CustomBadRequestException.cs" />
     <Compile Include="CustomExceptions\CustomAlreadyExistsException.cs" />
     <Compile Include="CustomExceptions\CustomNotAutorizedException.cs" />
+    <Compile Include="Interfaces\ICacheProfileToolUser.cs" />
+    <Compile Include="Interfaces\ICacheProfileException.cs" />
     <Compile Include="Interfaces\ICacheProfile.cs" />
+    <Compile Include="Interfaces\ICryptoSymmetric.cs" />
     <Compile Include="Interfaces\ICripto.cs" />
     <Compile Include="Interfaces\IDataAgregation.cs" />
+    <Compile Include="Interfaces\IGeolocalization.cs" />
     <Compile Include="Interfaces\IEmail.cs" />
     <Compile Include="Interfaces\ILog.cs" />
     <Compile Include="Interfaces\IMessage.cs" />
@@ -102,17 +116,24 @@
     <Compile Include="Interfaces\IDomain.cs" />
     <Compile Include="Interfaces\IDomainCrud.cs" />
     <Compile Include="Interfaces\ILdap.cs" />
+    <Compile Include="Interfaces\IQueue.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Interfaces\IAgenda.cs" />
     <Compile Include="Interfaces\IServiceLocator.cs" />
     <Compile Include="Interfaces\IElapsedLog.cs" />
     <Compile Include="Interfaces\ISms.cs" />
     <Compile Include="Interfaces\IUnitOfWork .cs" />
-    <Compile Include="OrderData.cs" />
+    <Compile Include="OrderDataIEnumerable.cs" />
+    <Compile Include="OrderDataReflection.cs" />
+    <Compile Include="OrderDataIQueryable.cs" />
     <Compile Include="Extensions\RepositoryExtensions.cs" />
-    <Compile Include="PaginatedData.cs" />
+    <Compile Include="PaginatedDataIEnumerable.cs" />
+    <Compile Include="PaginatedDataIQueryable.cs" />
+    <Compile Include="PaginateExtensionsIEnumerable.cs" />
+    <Compile Include="PaginateResult.cs" />
+    <Compile Include="PrinstScn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PaginateExtensions.cs" />
+    <Compile Include="PaginateExtensionsIQueryable.cs" />
     <Compile Include="ServiceLocatorSingleton.cs" />
     <Compile Include="Validations\ValidationConfirm.cs" />
     <Compile Include="Validations\Validation.cs" />
@@ -140,8 +161,7 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "$(SolutionDir)\..\Lib\$(TargetName).dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

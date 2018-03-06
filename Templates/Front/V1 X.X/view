@@ -1,0 +1,66 @@
+﻿<div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="btn-group pull-right" style="padding-bottom:10px;">
+                <a href="javascript:history.back()" class="btn btn-primary btn-sm" data-original-title="" title=""><i class="fa fa-reply"></i> Voltar</a>
+                <a class="btn btn-success btn-sm" ng-click="vm.crud.Create()"><i class="fa fa-plus"></i> Cadastrar <#classNameFormated#></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Filtros</div>
+                <div class="panel-body">
+                  <form>
+                    <#FiltersViews#>
+                  </form>
+                </div>
+                <div class="panel-footer">
+                    <button type="button" class="btn btn-primary" ng-click="vm.crud.Filter(vm.crud.ModelFilter)">
+                        <span class="fa fa-search"></span>
+                        Filtrar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Resultado</div>
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover">
+                      <thead>
+                        <tr>
+                          <#TableViewHead#>
+                          <th style="width:75px;" class="text-center">Ações</th>
+                            
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="item in vm.FilterResult">
+                            <#TableViewBody#>
+                            <td>
+                              <button ng-click="vm.crud.Edit(item.<#KeyName#>)" tooltip-placement="top" uib-tooltip="Editar" class="btn btn-xs btn-primary">
+                                <i class="fa fa-pencil"></i>
+                              </button>
+                              <button ng-click="vm.crud.Delete(item)" tooltip-placement="top" uib-tooltip="Excluir" class="btn btn-xs btn-danger">
+                                <i class="fa fa-trash-o"></i>
+                              </button>
+                            </td>
+                              
+                        </tr>
+                    </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="text-center">
+                <div-pagination />
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+﻿(function () {
+    'use strict';
+
+    angular.module("<#namespace#>.Controllers")
+        .controller("<#className#>Controller", <#className#>Controller);
+
+    <#className#>Controller.$inject = ['Crud']
+
+    function <#className#>Controller(Crud) {
+
+        var vm = this;
+
+        <#className#>ControllerBase(vm, Crud);
+
+    };
+})();

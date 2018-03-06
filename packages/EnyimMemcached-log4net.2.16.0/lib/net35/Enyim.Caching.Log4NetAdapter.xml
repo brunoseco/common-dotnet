@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Enyim.Caching.Log4NetAdapter</name>
+    </assembly>
+    <members>
+        <member name="T:Enyim.Caching.Log4NetFactory">
+            <summary>
+            log4net log factory
+            </summary>
+        </member>
+    </members>
+</doc>

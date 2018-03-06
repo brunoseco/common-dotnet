@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net.Mail;
 using System.Configuration;
 using Common.Domain.Interfaces;
+using System.Net;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Mime;
+using Common.Models;
 
 namespace Common.Email
 {
@@ -15,48 +16,85 @@ namespace Common.Email
         public Email()
         {
             this.mailMessage = new MailMessage();
+
+            this.SmtpPassword = ConfigurationManager.AppSettings["SmtpPassword"];
+            this.SmtpUser = ConfigurationManager.AppSettings["SmtpUser"];
+            this.SmtpHost = ConfigurationManager.AppSettings["SmtpHost"];
+            this.SmtpPort = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpPort"]);
+            this.SmtpEmail = ConfigurationManager.AppSettings["EmailSender"];
+            this.SmtpName = ConfigurationManager.AppSettings["NameSender"];
+            this.SmtpEnableSSL = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"]);
+            this.FooterMessage = ConfigurationManager.AppSettings["FooterMessage"];
+
+            this._attachmentsBytes = new List<AttachmentConfig>();
+            this._attachmentsPaths = new List<string>();
+
+            if (!this.SmtpPort.IsSent()) this.SmtpPort = 25;
+            //if (!this.FooterMessage.IsSent()) this.FooterMessage = "<span style='display: none;'>{unsubscribe} {accountaddress}</span>";
         }
+
+        public string SmtpPassword { get; set; }
+        public string SmtpUser { get; set; }
+        public string SmtpHost { get; set; }
+        public int SmtpPort { get; set; }
+        public string SmtpEmail { get; set; }
+        public string SmtpName { get; set; }
+        public bool SmtpEnableSSL { get; set; }
         public string Subject { get; set; }
         public string Message { get; set; }
-        public void EmailRecipientsAdd(string EmailRecipient)
+        public string FooterMessage { get; set; }
+        public string ReplayTo { get; set; }
+        private List<string> _attachmentsPaths { get; set; }
+        private List<AttachmentConfig> _attachmentsBytes { get; set; }
+
+        public void EmailRecipientsAdd(string emailRecipient)
         {
-            this.mailMessage.To.Add(EmailRecipient);
+            this.mailMessage.Bcc.Add(emailRecipient);
         }
+
+        public void AttachmentPathsAdd(string attachment)
+        {
+            this._attachmentsPaths.Add(attachment);
+        }
+
+        public void AttachmentBystesAdd(AttachmentConfig attachment)
+        {
+            this._attachmentsBytes.Add(attachment);
+        }
+
         public void EmailRecipientsClear()
         {
-            this.mailMessage.To.Clear();
+            this.mailMessage.Bcc.Clear();
         }
 
         public bool Send()
         {
+            if (this.ReplayTo.IsNotNull())
+                this.mailMessage.ReplyToList.Add(new MailAddress(this.ReplayTo));
 
-            var senha = ConfigurationManager.AppSettings["SmtpPassword"];
-            var user = ConfigurationManager.AppSettings["SmtpUser"];
-            var SMTP = ConfigurationManager.AppSettings["SmtpHost"];
-            var port = ConfigurationManager.AppSettings["SmtpPort"];
-            var emailSender = ConfigurationManager.AppSettings["EmailSender"];
-            var nameSender = ConfigurationManager.AppSettings["NameSender"];
-            var enableSSL = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"]);
-
-            string assuntoMensagem = Subject;
-            string conteudoMensagem = Message;
-
-            this.mailMessage.ReplyTo = new System.Net.Mail.MailAddress(emailSender);
-            this.mailMessage.From = new System.Net.Mail.MailAddress(nameSender + "<" + emailSender + ">");
+            this.mailMessage.From = new System.Net.Mail.MailAddress(this.SmtpName + "<" + this.SmtpEmail + ">");
             this.mailMessage.Priority = System.Net.Mail.MailPriority.Normal;
             this.mailMessage.IsBodyHtml = true;
-            this.mailMessage.Subject = assuntoMensagem;
-            this.mailMessage.Body = conteudoMensagem;
-
+            this.mailMessage.Subject = this.Subject;
+            this.mailMessage.Body = this.Message;
             this.mailMessage.SubjectEncoding = System.Text.Encoding.GetEncoding("ISO-8859-1");
             this.mailMessage.BodyEncoding = System.Text.Encoding.GetEncoding("ISO-8859-1");
-            
-            System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient();
 
-            smtp.Credentials = new System.Net.NetworkCredential(user, senha);
-            smtp.Host = SMTP;
-            smtp.Port = port.IsNullOrEmpty() ? 25 : Convert.ToInt32(port) ;
-            smtp.EnableSsl = enableSSL;
+            if (this.FooterMessage.IsSent())
+                this.mailMessage.Body += string.Format("<br />{0}", this.FooterMessage);
+
+            var smtp = new System.Net.Mail.SmtpClient
+            {
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new System.Net.NetworkCredential(this.SmtpUser, this.SmtpPassword),
+                Host = this.SmtpHost,
+                Port = this.SmtpPort,
+                EnableSsl = this.SmtpEnableSSL
+            };
+
+            this.AttachmentsPaths();
+            this.AttachmentsByte();
 
             try
             {
@@ -66,11 +104,35 @@ namespace Common.Email
             {
                 throw ex;
             }
-
+            smtp.Dispose();
             return true;
-        
+
         }
 
+        private void AttachmentsPaths()
+        {
+            if (this._attachmentsPaths.IsAny())
+            {
+                foreach (var attachmentPath in this._attachmentsPaths)
+                {
+                    var attachment = new Attachment(attachmentPath);
+                    this.mailMessage.Attachments.Add(attachment);
+                }
+            }
+        }
+
+        private void AttachmentsByte()
+        {
+            if (this._attachmentsBytes.IsAny())
+            {
+                foreach (var attachmentByte in this._attachmentsBytes)
+                {
+                    var ms = new MemoryStream(attachmentByte.Content);
+                    var attachment = new Attachment(ms, attachmentByte.FileName, attachmentByte.ContentType);
+                    this.mailMessage.Attachments.Add(attachment);
+                }
+            }
+        }
 
         public void Dispose()
         {

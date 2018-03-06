@@ -1,0 +1,39 @@
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using System.Globalization;
+using System.Collections.Generic;
+using Common.Domain;
+using System.Diagnostics;
+using System.Linq;
+using Common.Test;
+using <#namespace#>.Dto;
+using <#namespace#>.Application;
+using Cna.Erp.Education.Application.Tests.Moq;
+<#namespaceReleted#>
+<#namespaceReletedTest#>
+
+namespace <#namespace#>.Application.Test
+{
+	public partial class Helper<#className#>Moq : TestBase
+	{
+
+		private static <#className#>Dto SetManualValues(<#className#>Dto data,string  token)
+		{
+
+
+			return data;
+		}
+
+	
+		private static <#className#>Dto SetRelatedValues(<#className#>Dto data, string token)
+		{
+
+<#reletedValues#>
+
+			return data;
+		}
+
+	}
+}
+

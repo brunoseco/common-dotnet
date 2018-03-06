@@ -1,0 +1,118 @@
+﻿using Common.API;
+using Common.Interfaces;
+using System.Configuration;
+using <#namespace#>.Dto.<#boundedContext#>;
+using System.Collections.Generic;
+
+namespace <#namespace#>.Uri.Api
+{
+ public class <#inheritClassName#>Uri
+    {
+        private string endPointApi<#module#>;
+
+        public <#inheritClassName#>Uri()
+        {
+			this.endPointApi<#module#> = ConfigurationManager.AppSettings["endPointApi<#module#>"];
+        }
+
+		public HttpResult<<#className#>DtoSpecializedResult> Get(string token)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<<#className#>DtoSpecializedResult>(token, string.Format("api/<#inheritClassName#>"));
+			return response;
+        }
+
+		public HttpResult<<#className#>DtoSpecialized> GetByModel(string token, <#className#>Dto dto)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<<#className#>DtoSpecialized, <#className#>Dto>(token, "api/<#inheritClassName#>/GetByModel", dto);
+			return response;
+        }
+
+		public HttpResult<<#className#>DtoSpecialized> Get(string token, int id)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<<#className#>DtoSpecialized>(token, string.Format("api/<#inheritClassName#>/{0}", id));
+			return response;
+        }
+
+		public HttpResult<T> Get<T>(string token, int id)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<T>(token, string.Format("api/<#inheritClassName#>/{0}", id));
+			return response;
+        }
+
+		public HttpResult<<#className#>DtoSpecializedResult> Get(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<<#className#>DtoSpecializedResult, IFilter>(token, "api/<#inheritClassName#>", filter);
+            return response;
+        }
+
+
+		public HttpResult<<#className#>DtoSpecializedReport> GetReport(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<<#className#>DtoSpecializedReport, IFilter>(token, "api/<#inheritClassName#>/GetReport", filter);
+            return response;
+        }
+
+		public HttpResult<dynamic> GetDataListCustom(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<dynamic, IFilter>(token, "api/<#inheritClassName#>/GetDataListCustom", filter);
+			return response;
+        }
+
+		public HttpResult<dynamic> GetDataCustom(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<dynamic, IFilter>(token, "api/<#inheritClassName#>/GetDataCustom", filter);
+			return response;
+        }
+
+        public HttpResult<int> GetTotalByFilters(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<int, IFilter>(token, "api/<#inheritClassName#>/GetTotalByFilters", filter);
+            return response;
+        }
+
+		public HttpResult<T> Get<T>(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<T, IFilter>(token, "api/<#inheritClassName#>", filter);
+            return response;
+        }
+
+		public HttpResult<T> GetByModel<T>(string token, <#className#>Dto dto)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<T, <#className#>Dto>(token, "api/<#inheritClassName#>/GetByModel", dto);
+			return response;
+        }
+
+		public HttpResult<<#className#>DtoSpecializedDetails> GetDetails(string token, <#className#>Dto dto)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<<#className#>DtoSpecializedDetails, <#className#>Dto>(token, "api/<#inheritClassName#>/GetDetails", dto);
+			return response;
+        }
+
+		public HttpResult<T> GetDetails<T>(string token, <#className#>Dto dto)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<T, <#className#>Dto>(token, "api/<#inheritClassName#>/GetDetails", dto);
+			return response;
+        }
+
+		public HttpResult<T> GetReport<T>(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<T, IFilter>(token, "api/<#inheritClassName#>/GetReport", filter);
+            return response;
+        }
+
+    }
+}

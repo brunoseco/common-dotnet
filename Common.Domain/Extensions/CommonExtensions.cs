@@ -112,7 +112,6 @@ public static class CommonExtensions
 
     #endregion
 
-
     #region Ready
 
     public static bool IsReady(this int value)
@@ -137,6 +136,10 @@ public static class CommonExtensions
     #endregion
 
     #region Sents
+    public static bool IsSent(this Guid value)
+    {
+        return value != null ;
+    }
     public static bool IsSent(this short value)
     {
         return IsNotDefault(value);
@@ -258,21 +261,21 @@ public static class CommonExtensions
     {
         return value > 0;
     }
-    public static bool isNegative(this decimal value)
+    public static bool IsNegative(this decimal value)
     {
         return value < 0;
     }
-    public static bool isNegative(this int value)
+    public static bool IsNegative(this int value)
     {
         return value < 0;
     }
-    public static bool isPositive(this decimal value)
+    public static bool IsPositive(this decimal value)
     {
-        return value > 0;
+        return value >= 0;
     }
-    public static bool isPositive(this int value)
+    public static bool IsPositive(this int value)
     {
-        return value > 0;
+        return value >= 0;
     }
 
     #endregion
@@ -351,18 +354,99 @@ public static class CommonExtensions
             return 0;
         }
     }
-    public static string ToUpperCase(this string str)
+
+    public static string RemoveAccents(this string text)
+    {
+        StringBuilder sbReturn = new StringBuilder();
+        var arrayText = text.Normalize(NormalizationForm.FormD).ToCharArray();
+        foreach (char letter in arrayText)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(letter) != UnicodeCategory.NonSpacingMark)
+                sbReturn.Append(letter);
+        }
+        return sbReturn.ToString();
+    }
+
+    public static string ToUpperCase(this string str, bool removeAccents = false)
+    {
+        return str.ToUpperCase(string.Empty, removeAccents);
+    }
+
+    public static string ToUpperCase(this string str, string caseNull, bool removeAccents = false)
     {
         if (str == null)
-            return null;
+            return caseNull;
 
         if (str == string.Empty)
-            return string.Empty;
+            return caseNull;
+
+        if (removeAccents)
+            return str.ToUpper().RemoveAccents();
 
         return str.ToUpper();
-
-
     }
+
+    public static string ToLowerCase(this string str, bool removeAccents = false)
+    {
+        return str.ToLowerCase(string.Empty, removeAccents);
+    }
+
+    public static string ToLowerCase(this string str, string caseNull, bool removeAccents = false)
+    {
+        if (str == null)
+            return caseNull;
+
+        if (str == string.Empty)
+            return caseNull;
+
+        if (removeAccents)
+            return str.ToLower().RemoveAccents();
+
+        return str.ToLower();
+    }
+
+    public static string CapitalizarNome(this string str)
+    {
+        string[] excecoes = new string[] { "e", "de", "da", "das", "do", "dos" };
+        var palavras = new Queue<string>();
+        foreach (var palavra in str.ToLower().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (!excecoes.Contains(palavra))
+                palavras.Enqueue(char.ToUpper(palavra[0]) + palavra.Substring(1));
+            else
+                palavras.Enqueue(palavra);
+
+        }
+        return string.Join(" ", palavras);
+    }
+
+    public static string FisrtCharToLower(this string str)
+    {
+        if (str.IsNullOrEmpaty())
+            return str;
+
+        var firstLower = str.FirstOrDefault().ToString().ToLower();
+        var result = string.Format("{0}{1}", firstLower, str.Substring(1, str.Length - 1));
+
+        return result;
+    }
+
+    public static string CleanUnnecessarySpaces(this string str)
+    {
+        if (!str.IsSent())
+            return str;
+
+        var newStr = string.Empty;
+
+        newStr = Regex.Replace(str, @"^\s+", ""); // First caracter as space
+        newStr = Regex.Replace(str, @"\s+$", ""); // Last caracter as space
+        newStr = Regex.Replace(str, @"[ ]{2,}", " "); // Double or more spaces in middle
+
+        return newStr;
+    }
+
+
+
     #endregion
 
     #region Types
@@ -388,6 +472,15 @@ public static class CommonExtensions
 
         return false;
     }
+
+    public static bool IsDecimal(this object value)
+    {
+        if (value.IsNull())
+            return false;
+
+        var valueString = value.ToString();
+        return valueString.ToString().Contains(".") || valueString.Contains(",");
+    }
     public static bool IsEmail(this string value)
     {
         var regex = new Regex(@"[\w-]+@([\w-]+\.)+[\w-]+");
@@ -411,11 +504,9 @@ public static class CommonExtensions
     }
     #endregion
 
-    #region Othres
-    public static string Right(this string value, int numeroCaracteres)
-    {
-        return value.Substring(value.Length - numeroCaracteres, numeroCaracteres);
-    }
+    #region Others
+
+
     public static T SetNullToEmptyInstance<T>(this object obj) where T : DomainBase
     {
 
@@ -439,6 +530,8 @@ public static class CommonExtensions
         return model.IsNotNull() ? model : (T)newInstance;
 
     }
+
+
     #endregion
 
 }

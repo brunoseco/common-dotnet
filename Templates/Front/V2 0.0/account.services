@@ -1,0 +1,44 @@
+﻿(function () {
+    'use strict';
+
+    angular.module('<#contextName#>.Services')
+        .factory('AccountService', AccountService);
+
+    AccountService.$inject = ['$rootScope', 'Api', 'Cache', 'Loading', '$state', '$location'];
+
+    function AccountService($rootScope, Api, Cache, Loading, $state, $location) {
+
+        var nameToken = "TOKEN_AUTH";
+        var nameEndPointAccess = "AUTH";
+
+        return {
+            login: _login,
+            logout: _logout,
+        }
+
+        function _logout() {
+            Cache.Reset();
+            $state.go("Login");
+            window.location.reload();
+        }
+
+        function _login(email, password) {
+
+            var apiSSO = new Api.resourse("Account");
+
+            apiSSO.Data = {
+                ClientId: "<#contextName#>",
+                ClientSecret: "secret",
+                Scope: "openid profile ssosm",
+                User: email,
+                Password: password
+            };
+            apiSSO.EndPoint = nameEndPointAccess
+            apiSSO.SuccessHandle = function (result) {
+                Cache.Add(nameToken, result.data.accessToken);
+                window.location = '#/Home';
+            }
+            apiSSO.Post();
+        }
+    };
+})();

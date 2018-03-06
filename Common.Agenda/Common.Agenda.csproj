@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DE01E283-644B-4DE6-8388-D4591E5048E3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Common.Agenda</RootNamespace>
+    <AssemblyName>Common.Agenda</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Service References\ClassActivityDataService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ClassDataService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\StudentDataService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\UserDataService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="TellMe.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Service References\ClassActivityDataService\ClassActivityDataService.wsdl" />
+    <None Include="Service References\ClassActivityDataService\ClassActivityDataService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClassActivityDataService\ClassActivityDataService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClassActivityDataService\ClassActivityDataService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClassActivityDataService\ClassActivityDataService3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClassActivityDataService\Common.Agenda.ClassActivityDataService.ClassActivityDescriptiveData.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ClassDataService\ClassDataService.wsdl" />
+    <None Include="Service References\ClassDataService\ClassDataService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClassDataService\ClassDataService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClassDataService\ClassDataService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClassDataService\Common.Agenda.ClassDataService.ClassData.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\StudentDataService\Common.Agenda.StudentDataService.StudentData.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\StudentDataService\StudentDataService.wsdl" />
+    <None Include="Service References\StudentDataService\StudentDataService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\StudentDataService\StudentDataService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\StudentDataService\StudentDataService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\StudentDataService\StudentDataService3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserDataService\Common.Agenda.UserDataService.SchoolUserData.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\UserDataService\UserDataService.wsdl" />
+    <None Include="Service References\UserDataService\UserDataService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserDataService\UserDataService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserDataService\UserDataService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserDataService\UserDataService3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Domain\Common.Domain.csproj">
+      <Project>{af134bf9-6c09-4822-bbeb-a2eff5b1878d}</Project>
+      <Name>Common.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ClassActivityDataService\" />
+    <WCFMetadataStorage Include="Service References\ClassDataService\" />
+    <WCFMetadataStorage Include="Service References\StudentDataService\" />
+    <WCFMetadataStorage Include="Service References\UserDataService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UserDataService\UserDataService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UserDataService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UserDataService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UserDataService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClassDataService\ClassDataService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClassDataService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClassDataService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClassDataService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClassActivityDataService\ClassActivityDataService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClassActivityDataService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClassActivityDataService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClassActivityDataService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\StudentDataService\StudentDataService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\StudentDataService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\StudentDataService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\StudentDataService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "$(SolutionDir)\..\Lib\$(TargetName).dll"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

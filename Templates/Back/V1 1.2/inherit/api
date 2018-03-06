@@ -1,0 +1,211 @@
+﻿using Common.API;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web;
+using Common.Interfaces;
+using <#namespace#>.Dto.<#boundedContext#>;
+using <#namespace#>.Application;
+using <#namespace#>.Filters;
+
+namespace <#namespace#>.Api.Controllers
+{
+    public class <#inheritClassName#>Controller : ApiController
+    {
+        private HttpResult<<#className#>Dto> result;
+		private HelperHttpLog httpLog;
+		private <#inheritClassName#>App app;
+
+        public <#inheritClassName#>Controller()
+        {
+			this.httpLog = new HelperHttpLog();
+            this.httpLog.LogRequestIni();
+            this.result = new HttpResult<<#className#>Dto>();
+        }
+
+<#ApiGet#>
+
+
+		[ActionName("DefaultAction")]
+		public HttpResponseMessage Get([FromUri]<#className#>Filter filters)
+        {
+			var result = new HttpResult<<#className#>Dto>();
+
+            try
+            {
+                var token = HelperAuth.GetHeaderToken();
+                this.app = new <#inheritClassName#>App(token);
+				var searchResult = this.app.GetByFilters(filters);
+                result.Summary = searchResult.Summary;
+				result.Warnings = this.app.GetDomainWarning(filters);
+                result.Success(searchResult.DataList);
+				this.app.Dispose();
+                return Request.CreateResponse(result.StatusCode, result);
+
+            }
+            catch (Exception ex)
+            {
+                result.ReturnCustomException(ex, filters);
+				return Request.CreateResponse(result.StatusCode, result);
+            }
+        }
+		
+		[ActionName("GetReport")]
+		public HttpResponseMessage GetReport([FromUri]<#className#>Filter filters)
+        {
+			var result = new HttpResult<<#className#>Dto>();
+
+            try
+            {
+                var token = HelperAuth.GetHeaderToken();
+                this.app = new <#inheritClassName#>App(token);
+				var searchResult = this.app.GetReport(filters);
+                result.Summary = searchResult.Summary;
+				result.Warnings = this.app.GetDomainWarning(filters);
+                result.Success(searchResult.DataList);
+				this.app.Dispose();
+                return Request.CreateResponse(result.StatusCode, result);
+
+            }
+            catch (Exception ex)
+            {
+                result.ReturnCustomException(ex, filters);
+				return Request.CreateResponse(result.StatusCode, result);
+            }
+        }
+
+		[ActionName("GetDataListCustom")]
+        public HttpResponseMessage GetDataListCustom([FromUri]<#className#>Filter filters)
+		{
+			var result = new HttpResult<object>();
+
+			try
+			{
+				var token = HelperAuth.GetHeaderToken();
+				this.app = new <#inheritClassName#>App(token);
+                var searchResult = this.app.GetDataListCustom(filters);
+                result.Summary = searchResult.Summary;
+				result.Warnings = this.app.GetDomainWarning(filters);
+                result.Success(searchResult.DataList);
+				this.app.Dispose();
+                return Request.CreateResponse(result.StatusCode, result);
+
+			}
+			catch (Exception ex)
+			{
+				result.ReturnCustomException(ex, filters);
+				return Request.CreateResponse(result.StatusCode, result);
+			}
+
+		}
+
+		[ActionName("GetDataCustom")]
+        public HttpResponseMessage GetDataCustom([FromUri]<#className#>Filter filters)
+		{
+			var result = new HttpResult<object>();
+
+			try
+			{
+				var token = HelperAuth.GetHeaderToken();
+				this.app = new <#inheritClassName#>App(token);
+                var data = this.app.GetDataCustom(filters);
+				result.Warnings = this.app.GetDomainWarning(filters);
+				result.Success(data);
+				this.app.Dispose();
+				return Request.CreateResponse(result.StatusCode, result);
+
+			}
+			catch (Exception ex)
+			{
+				result.ReturnCustomException(ex, filters);
+				return Request.CreateResponse(result.StatusCode, result);
+			}
+
+		}
+
+		[ActionName("GetByModel")]
+		public HttpResponseMessage GetByModel([FromUri]<#className#>Dto model)
+        {
+            var result = new HttpResult<<#className#>Dto>();
+
+            try
+            {
+
+                var token = HelperAuth.GetHeaderToken();
+                this.app = new <#inheritClassName#>App(token);
+                var searchResult = this.app.Get(model);
+				result.Warnings = this.app.GetDomainWarning();
+                result.Success(searchResult);
+				this.app.Dispose();
+				return Request.CreateResponse(result.StatusCode, result);
+
+
+            }
+            catch (Exception ex)
+            {
+                result.ReturnCustomException(ex, model);
+				return Request.CreateResponse(result.StatusCode, result);
+            }
+
+        }
+
+		[ActionName("GetDetails")]
+		public HttpResponseMessage GetDetails([FromUri]<#className#>Dto model)
+        {
+            var result = new HttpResult<<#className#>Dto>();
+
+            try
+            {
+
+                var token = HelperAuth.GetHeaderToken();
+                this.app = new <#inheritClassName#>App(token);
+                var data = this.app.GetDetails(model);
+				result.Warnings = this.app.GetDomainWarning();
+                result.Success(data);
+				this.app.Dispose();
+				return Request.CreateResponse(result.StatusCode, result);
+
+            }
+            catch (Exception ex)
+            {
+                result.ReturnCustomException(ex, model);
+				return Request.CreateResponse(result.StatusCode, result);
+            }
+
+        }
+		
+		[ActionName("GetTotalByFilters")]
+        public HttpResponseMessage GetTotalByFilters([FromUri]<#className#>Filter filters)
+        {
+            var result = new HttpResult<int>();
+
+            try
+            {
+                var token = HelperAuth.GetHeaderToken();
+                this.app = new <#inheritClassName#>App(token);
+                var total = this.app.GetTotalByFilters(filters);
+				result.Warnings = this.app.GetDomainWarning(filters);
+                result.Success(total);
+                this.app.Dispose();
+                return Request.CreateResponse(result.StatusCode, result);
+
+            }
+            catch (Exception ex)
+            {
+                result.ReturnCustomException(ex, filters);
+				return Request.CreateResponse(result.StatusCode, result);
+            }
+        }
+		
+
+		protected override void Dispose(bool disposing)
+        {
+			if (this.app.IsNotNull()) this.app.Dispose();
+            this.httpLog.LogRequestEnd();
+            base.Dispose(disposing);
+        }
+    }
+}

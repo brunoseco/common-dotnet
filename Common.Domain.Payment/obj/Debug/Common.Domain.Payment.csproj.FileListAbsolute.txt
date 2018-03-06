@@ -1,0 +1,11 @@
+C:\Projetos\Common-V2\Main\Common.Domain.Payment\bin\Debug\Common.Domain.Payment.dll
+C:\Projetos\Common-V2\Main\Common.Domain.Payment\bin\Debug\Common.Domain.Payment.pdb
+C:\Projetos\Common-V2\Main\Common.Domain.Payment\obj\Debug\Common.Domain.Payment.csproj.CoreCompileInputs.cache
+C:\Projetos\Common-V2\Main\Common.Domain.Payment\obj\Debug\Common.Domain.Payment.dll
+C:\Projetos\Common-V2\Main\Common.Domain.Payment\obj\Debug\Common.Domain.Payment.pdb
+C:\Projetos\Common-V2\Main\Common.Domain.Payment\obj\Debug\Common.Domain.Payment.csprojResolveAssemblyReference.cache
+C:\Pessoal\common-dotnet\Common.Domain.Payment\bin\Debug\Common.Domain.Payment.dll
+C:\Pessoal\common-dotnet\Common.Domain.Payment\bin\Debug\Common.Domain.Payment.pdb
+C:\Pessoal\common-dotnet\Common.Domain.Payment\obj\Debug\Common.Domain.Payment.csproj.CoreCompileInputs.cache
+C:\Pessoal\common-dotnet\Common.Domain.Payment\obj\Debug\Common.Domain.Payment.dll
+C:\Pessoal\common-dotnet\Common.Domain.Payment\obj\Debug\Common.Domain.Payment.pdb

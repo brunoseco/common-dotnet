@@ -1,0 +1,62 @@
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Common.Models;
+using Common.Domain;
+using Common.Interfaces;
+using Common.Domain.Interfaces;
+using Common.Domain.CustomExceptions;
+using Cna.Erp.Education.Enums;
+using Cna.Erp.Education.Enums.QueryOptimizerBehavior;
+using Common.Cna.Domain.Helpers;
+using Cna.Erp.Education.Enums.Behavior.Core;
+using Cna.Erp.Core.ModelSummary;
+using <#namespace#>.Filters;
+
+namespace <#namespace#>.Domain.Models.<#boundedContext#>
+{
+    public partial class <#className#> : <#namespaceDomainSource#>.Domain.<#className#>Base
+    {
+        private IRepository<<#className#>> repQuery;
+        public <#className#>() { }
+        public <#className#>(IRepository<Cna.Erp.Core.Domain.<#className#>> rep, ICache cache)
+            : base(rep, cache)
+        {
+
+        }
+
+        public <#className#>(IRepository<<#className#>> repQuery, ICache cache)
+        {
+            this.repQuery = repQuery;
+            this.cache = cache;
+			this.validationHelper = new ValidationHelper();
+
+        }
+
+        #region Navigation
+
+        #endregion
+
+        #region Calculate Props
+
+        #endregion
+
+        #region Helpers
+
+        #endregion
+
+        public override void Dispose()
+        {
+            if (this.repQuery != null)
+                this.repQuery.Dispose();
+        }
+
+        ~<#className#>()
+        {
+
+        }
+    }
+}

@@ -13,6 +13,8 @@ namespace Common.Infrastructure.Log
         Debug,
         Error,
         Fatal,
-        True
+        Console,
+        True,
+        False,
     }
 }

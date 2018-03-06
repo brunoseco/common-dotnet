@@ -1,0 +1,6 @@
+﻿<section class="col-md-6">
+                            <div class="form-group">
+                              <label><#propertyName#></label>
+                              <input type="text" class="form-control" ng-model="vm.crud.ModelFilter.<#propertyName#>" />                            
+                            </div>
+                        </section>

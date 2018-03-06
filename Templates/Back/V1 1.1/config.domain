@@ -1,0 +1,33 @@
+﻿using Common.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace <#namespace#>.Domain
+{
+    public abstract class ConfigDomain<#module#> : DomainBase
+    {
+		
+		private CurrentUser _user;
+
+		public void Config(Common.Domain.Interfaces.ICache cache)
+        {
+
+        }
+
+		public override CurrentUser ValidateAuth(string token, Common.Domain.Interfaces.ICache cache)
+        {
+            if (_user.IsNull())
+                this._user = base.ValidateAuth(token, cache);
+
+            return _user;
+        }
+
+		public override void Dispose()
+        {
+        
+		}
+    }
+}

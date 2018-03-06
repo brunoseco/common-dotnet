@@ -1,4 +1,5 @@
 ﻿using Common.Domain.Interfaces;
+using Common.StorageBase;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -99,29 +100,74 @@ namespace Common.Infrastructure.Log
 
             try
             {
+
                 var log = ConfigurationManager.AppSettings["logs"].ToUpper();
+                var message = string.Format(format, arg);
+                if (tipoLog == ETipoLog.Error.ToString() || tipoLog == ETipoLog.Fatal.ToString())
+                    Console.ForegroundColor = ConsoleColor.Red;
+                else
+                    Console.ForegroundColor = ConsoleColor.White;
+
+                if (log == "CONSOLE")
+                {
+                    if (tipoLog.ToString().ToUpper() == ETipoLog.Debug.ToString().ToUpper())
+                        Console.WriteLine(message);
+                }
+
                 if (tipoLog.ToString().ToUpper() == log || tipoLog == ETipoLog.Error.ToString() || tipoLog == ETipoLog.Fatal.ToString() || log == ETipoLog.True.ToString().ToUpper())
                 {
-                    var message = string.Format(format, arg);
-
-                    if (tipoLog == ETipoLog.Error.ToString() || tipoLog == ETipoLog.Fatal.ToString())
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    else
-                        Console.ForegroundColor = ConsoleColor.White;
-
                     Console.WriteLine(message);
-                    var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, String.Format("log-{0}-{1}.log", tipoLog, DateTime.Now.ToString("dd-MM-yyyy")));
-                    using (var write = new StreamWriter(path, true))
-                    {
-                        write.WriteLine(message);
-                    }
+
+                    if (GetStorageConfig().ToUpper() == "CLOUD")
+                        CloadLog(tipoLog, message);
+                    else
+                        FileLog(tipoLog, message);
                 }
 
             }
-            catch
+            catch (Exception ex)
             {
-
+                Console.WriteLine(ex);
             }
+        }
+
+        private static string GetStorageConfig()
+        {
+            return ConfigurationManager.AppSettings["Storage"] ?? string.Empty;
+        }
+
+        private static void FileLog(string tipoLog, string message)
+        {
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, GetFileName(tipoLog));
+            using (var write = new StreamWriter(path, true))
+            {
+                write.WriteLine(message);
+            }
+        }
+
+        private static void CloadLog(string tipoLog, string message)
+        {
+
+            var fileName = GetFileNameCload(tipoLog);
+            var ms = new MemoryStream();
+            var write = new StreamWriter(ms);
+            write.WriteLine(message);
+            HelperStorageBase.SaveBytesInFile(ms.ToArray(), fileName, "logs");
+
+        }
+
+        private static string GetFileName(string tipoLog)
+        {
+            return String.Format("log-{0}-{1}.log", tipoLog, DateTime.Now.ToString("dd-MM-yyyy"));
+        }
+
+        private static string GetFileNameCload(string tipoLog)
+        {
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory
+             .Replace(":", "")
+             .Replace("\\", "-");
+
+            return String.Format("log-{0}-{1}-{2}.log", baseDirectory, tipoLog, DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss"));
         }
     }
 }

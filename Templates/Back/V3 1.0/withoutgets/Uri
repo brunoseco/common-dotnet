@@ -1,0 +1,75 @@
+﻿using Common.API;
+using Common.Interfaces;
+using System.Configuration;
+using <#namespace#>.Dto;
+using System.Collections.Generic;
+
+namespace <#namespace#>.Uri.Api
+{
+ public class <#className#>Uri
+    {
+        private string endPointApi<#module#>;
+
+        public <#className#>Uri()
+        {
+            this.endPointApi<#module#> = ConfigurationManager.AppSettings["endPointApi<#module#>"];
+        }
+
+		public HttpResult<Common.Dto.DtoBase> Post(string token,Common.Dto.DtoBase dto)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Post<Common.Dto.DtoBase, Common.Dto.DtoBase>(token, "api/<#className#>/", dto);
+            return response;
+        }
+
+		public HttpResult<Common.Dto.DtoBase> Post(string token,IEnumerable<Common.Dto.DtoBase> dtos)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Post<IEnumerable<Common.Dto.DtoBase>, Common.Dto.DtoBase>(token, "api/<#className#>/PostMany/", dtos);
+            return response;
+        }
+
+		public HttpResult<Common.Dto.DtoBase> Post(string token,IEnumerable<Common.Dto.DtoBase> dtos)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Post<IEnumerable<Common.Dto.DtoBase>, Common.Dto.DtoBase>(token, "api/<#className#>/PostMany/", dtos);
+            return response;
+        }
+
+		public HttpResult<Common.Dto.DtoBase> Post(string token,Common.Dto.DtoBase dto)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Post<Common.Dto.DtoBase, Common.Dto.DtoBase>(token, "api/<#className#>/", dto);
+            return response;
+        }
+
+		public HttpResult<T> Post<T>(string token, Common.Dto.DtoBase dto)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Post<Common.Dto.DtoBase, T>(token, "api/<#className#>/", dto);
+            return response;
+        }
+
+		public HttpResult<Common.Dto.DtoBase> Put(string token,Common.Dto.DtoBase dto)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Put<Common.Dto.DtoBase, Common.Dto.DtoBase>(token, "api/<#className#>/", dto);
+            return response;
+        }
+
+		public HttpResult<Common.Dto.DtoBase> Delete(string token,Common.Dto.DtoBase dto)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Delete<Common.Dto.DtoBase, Common.Dto.DtoBase>(token, "api/<#className#>/", dto);
+            return response;
+        }
+
+		public HttpResult<Common.Dto.DtoBase> GetWarnings(string token, IFilter filter)
+        {
+            var request = new HelperHttp(endPointApi<#module#>);
+            var response = request.Get<Common.Dto.DtoBase, IFilter>(token, "api/<#className#>/GetWarnings", filter);
+            return response;
+        }
+    
+    }
+}

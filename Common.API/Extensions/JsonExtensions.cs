@@ -22,9 +22,8 @@ using System.Threading.Tasks;
         {
             var result = new List<T>();
             foreach (var item in instances)
-            {
                 result.Add(item.CastJsonToType<T>());
-            }
+
             return result;
         }
 

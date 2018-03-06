@@ -35,11 +35,20 @@ namespace Common.Domain
         public string SummaryBehavior { get; set; }
 
         [NotMapped]
-        public object Parameters { get; set; }
+        public IEnumerable<object> Parameters { get; set; }
+
+        [NotMapped]
+        public object Parameter { get; set; }
+
 
         public virtual void SetToken(string token)
         {
             this.token = token;
+        }
+
+        public virtual CurrentUser ValidateAuth(string token, ICache cache)
+        {
+            return HelperCurrentUser.ValidateAuth(token, cache);
         }
 
         public virtual void Init()
@@ -64,7 +73,7 @@ namespace Common.Domain
             }
 
             if (filter.IsPagination)
-                return querySorted.PaginateNew(querySorted, filter.PageIndex, filter.PageSize, totalCount);
+                return querySorted.PaginateNew(querySorted, filter, totalCount);
 
             return new PaginateResult<T>
             {

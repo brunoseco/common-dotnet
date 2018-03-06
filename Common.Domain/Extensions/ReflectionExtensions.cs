@@ -36,39 +36,45 @@ public static class RefplectionExtensions
     }
     public static bool IsNullOrDefault(this PropertyInfo item, object obj, bool allowZero = false, bool allowNull = false)
     {
-        var value = item.GetValue(obj);
+        try
+        {
+            var value = item.GetValue(obj);
 
-        if (allowNull == true)
-            return false;
-
-        if (value.IsNumber() && value != "-")
-            if (Convert.ToDecimal(value) != 0 || allowZero)
+            if (allowNull == true)
                 return false;
 
-        if (item.PropertyType == typeof(string))
-            if (value.IsNotNull())
+            if (value.IsNumber() && value.ToString() != "-")
+                if (Convert.ToDecimal(value) != 0 || allowZero)
+                    return false;
+
+            if (item.PropertyType == typeof(string))
+                if (value.IsNotNull())
+                    return false;
+
+            if (item.PropertyType == typeof(bool))
                 return false;
 
-        if (item.PropertyType == typeof(bool))
-            return false;
+            if (item.PropertyType == typeof(bool?))
+                if (value.IsNotNull())
+                    return false;
 
-        if (item.PropertyType == typeof(bool?))
-            if (value.IsNotNull())
-                return false;
+            if (item.PropertyType == typeof(DateTime))
+                if (Convert.ToDateTime(value) != default(DateTime))
+                    return false;
 
-        if (item.PropertyType == typeof(DateTime))
-            if (Convert.ToDateTime(value) != default(DateTime))
-                return false;
+            if (item.PropertyType == typeof(DateTime?))
+                if (value.IsNotNull())
+                    return false;
 
-        if (item.PropertyType == typeof(DateTime?))
-            if (value.IsNotNull())
-                return false;
+            if (item.PropertyType == typeof(DomainBase))
+                if (value.IsNotNull())
+                    return false;
 
-        if (item.PropertyType == typeof(DomainBase))
-            if (value.IsNotNull())
-                return false;
-
-        return true;
+            return true;
+        }
+        catch {
+            return true;
+        }
 
     }
 

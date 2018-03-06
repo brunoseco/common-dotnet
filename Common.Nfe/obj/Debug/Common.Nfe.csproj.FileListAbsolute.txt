@@ -1,0 +1,12 @@
+C:\Projetos\Common-V2\Main\Common.Nfe\bin\Debug\Common.Nfe.dll.config
+C:\Projetos\Common-V2\Main\Common.Nfe\bin\Debug\Common.Nfe.dll
+C:\Projetos\Common-V2\Main\Common.Nfe\bin\Debug\Common.Nfe.pdb
+C:\Projetos\Common-V2\Main\Common.Nfe\obj\Debug\Common.Nfe.csproj.CoreCompileInputs.cache
+C:\Projetos\Common-V2\Main\Common.Nfe\obj\Debug\Common.Nfe.dll
+C:\Projetos\Common-V2\Main\Common.Nfe\obj\Debug\Common.Nfe.pdb
+C:\Pessoal\common-dotnet\Common.Nfe\bin\Debug\Common.Nfe.dll.config
+C:\Pessoal\common-dotnet\Common.Nfe\bin\Debug\Common.Nfe.dll
+C:\Pessoal\common-dotnet\Common.Nfe\bin\Debug\Common.Nfe.pdb
+C:\Pessoal\common-dotnet\Common.Nfe\obj\Debug\Common.Nfe.csproj.CoreCompileInputs.cache
+C:\Pessoal\common-dotnet\Common.Nfe\obj\Debug\Common.Nfe.dll
+C:\Pessoal\common-dotnet\Common.Nfe\obj\Debug\Common.Nfe.pdb

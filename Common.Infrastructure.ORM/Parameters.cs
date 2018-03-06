@@ -23,8 +23,12 @@ namespace Common.Infrastructure.ORM
                     string name = "@" + propertyInfo.Name;
                     object value = propertyInfo.GetValue(parameters, null);
 
-                    parameterNames.Add(name);
-                    parameterParameters.Add(new SqlParameter(name, value ?? DBNull.Value));
+                    var IsDefaultValue_ = IsDefaultValue(propertyInfo, value);
+                    if (!IsDefaultValue_)
+                    {
+                        parameterNames.Add(name);
+                        parameterParameters.Add(new SqlParameter(name, value ?? DBNull.Value));
+                    }
                 }
             }
 
@@ -32,6 +36,18 @@ namespace Common.Infrastructure.ORM
                 storedProcedure += " " + string.Join(", ", parameterNames);
 
             return new Tuple<string, object[]>(storedProcedure, parameterParameters.ToArray());
+        }
+
+        private static bool IsDefaultValue(PropertyInfo propertyInfo, object value)
+        {
+            var IsDefaultValue_ = false;
+            if (propertyInfo.PropertyType == typeof(DateTime))
+            {
+                var castValue = Convert.ToDateTime(value);
+                if (castValue == default(DateTime))
+                    IsDefaultValue_ = true;
+            }
+            return IsDefaultValue_;
         }
 
     }

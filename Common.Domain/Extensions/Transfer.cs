@@ -83,6 +83,9 @@ public static class Transfer
 
                         if (collectionSourceValue.IsNotNull() && collectionSourceValue.Count > 0)
                         {
+                            if (collectionDestinationValue.IsNull())
+                                collectionDestinationValue = new List<object>().AsEnumerable();
+
                             if (Behaviour == BehaviourTransferTo.AddNewItemsInCollections)
                             {
                                 collectionSourceValue.AddRange(collectionDestinationValue);

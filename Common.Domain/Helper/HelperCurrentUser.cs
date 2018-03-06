@@ -10,12 +10,17 @@ namespace Common.Domain.Helper
 
         public static CurrentUser ValidateAuth(string token, ICache cache)
         {
-            var exists = cache.ExistsKey(token);
+            if (Convert.ToBoolean(ConfigurationManager.AppSettings["DisableAuth"]) == true)
+                return new CurrentUser();
 
-            if (!exists)
+            var user = new CurrentUser();
+            user.SetCache(cache);
+            user.GetUserFromCache(token);
+
+            if (user.IsNull())
                 throw new CustomNotAutorizedException(string.Format("Usuário [{0}] não autenticado", token));
 
-            return (CurrentUser)cache.Get(token);
+            return user;
         }        
     }
 }

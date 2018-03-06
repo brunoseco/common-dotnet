@@ -67,13 +67,11 @@
     <OutputPath>bin\Local\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -126,15 +124,56 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Angular20\DefineTemplateNameAngular20.cs" />
+    <Compile Include="Angular20\HelperControlHtmlAngular20.cs" />
+    <Compile Include="Angular20\HelperSysObjectsAngular20.cs" />
+    <Compile Include="Angular20\PathOutputAngular20.cs" />
+    <Compile Include="ReadOnly\HelperSysObjectsReadOnly.cs" />
+    <Compile Include="DDDWithTransaction\HelperSysObjectsDDDWithTransaction.cs" />
+    <Compile Include="HelperFixRename.cs" />
+    <Compile Include="Structural\ELayer.cs" />
+    <Compile Include="Structural\HelperSysObjectUtil.cs" />
+    <Compile Include="TransactionScript\DefineTemplateNameTransactionScript.cs" />
+    <Compile Include="TransactionScript\HelperSysObjectsTransactionScript.cs" />
+    <Compile Include="HelperRestrictions.cs" />
+    <Compile Include="Structural\ConfigExecuteTemplateClass.cs" />
+    <Compile Include="Structural\EFlowTemplate.cs" />
+    <Compile Include="Structural\EOperation.cs" />
+    <Compile Include="Structural\ConfigExecuteTemplateFields.cs" />
+    <Compile Include="Structural\ConfigExecuteTemplate.cs" />
+    <Compile Include="Structural\HelperSysObjectsBaseFront.cs" />
+    <Compile Include="Structural\PathOutputBase.cs" />
+    <Compile Include="TransactionScript\PathOutputTransactionScript.cs" />
+    <Compile Include="Vue\DefineTemplateNameVue.cs" />
+    <Compile Include="Vue\HelperSysObjectsVue.cs" />
+    <Compile Include="Vue\PathOutputVue.cs" />
+    <Compile Include="Angular\DefineTemplateNameAngular.cs" />
+    <Compile Include="Angular\PathOutputAngular.cs" />
+    <Compile Include="Audit.cs" />
+    <Compile Include="HelperExternalResources.cs" />
     <Compile Include="Context.cs" />
-    <Compile Include="DefineTemplate.cs" />
+    <Compile Include="Structural\DefineTemplateFolder.cs" />
+    <Compile Include="DefineTemplateName.cs" />
+    <Compile Include="HelperFieldConfig.cs" />
+    <Compile Include="HelperFlow.cs" />
+    <Compile Include="AngularJs\HelperControlHtml.cs" />
+    <Compile Include="Angular\HelperSysObjectsAngular.cs" />
+    <Compile Include="AngularJs\HelperSysObjectsAngularJs.cs" />
+    <Compile Include="Structural\HelperSysObjectsBaseBack.cs" />
+    <Compile Include="TableModel\HelperSysObjectsTableModel.cs" />
+    <Compile Include="Structural\HelperSysObjectsBase.cs" />
+    <Compile Include="HelperSysObjectsInherit.cs" />
     <Compile Include="HelperSysObjectsClean.cs" />
-    <Compile Include="HelperSysObjectsBase.cs" />
-    <Compile Include="HelperSysObjectsWithPrefix.cs" />
+    <Compile Include="HelperSysObjectsDbContextPrecompiledViews.cs" />
+    <Compile Include="HelperSysObjectsTests.cs" />
+    <Compile Include="DDD\HelperSysObjectsDDD.cs" />
     <Compile Include="Info.cs" />
     <Compile Include="PathOutput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Read.cs" />
     <Compile Include="TableInfo.cs" />
+    <Compile Include="Tabs.cs" />
+    <Compile Include="TypeConvertCSharp.cs" />
     <Compile Include="UniqueListTableInfo.cs" />
     <Compile Include="UniqueListInfo.cs" />
   </ItemGroup>
@@ -172,6 +211,7 @@
       <Name>Common.Infrastructure.Log</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -181,8 +221,7 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "$(SolutionDir)\..\Lib\$(TargetName).dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

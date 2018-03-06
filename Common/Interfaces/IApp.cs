@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Common.Interfaces
 {
-    public interface IApp
+    public interface IAppSync
     {
 
         IEnumerable<DataItem> GetDataItem(IFilter filter);

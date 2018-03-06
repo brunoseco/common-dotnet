@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="00d2b5c0-1566-4359-a885-854cc4fa3752" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://tellme.fastsolucoes.com.br/wcf/ClassActivityDataService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ClassActivityDataService.wsdl" MetadataType="Wsdl" ID="020595ef-5633-4a1a-b1e6-69fa55e780ac" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/ClassActivityDataService.svc?wsdl" />
+    <MetadataFile FileName="ClassActivityDataService.xsd" MetadataType="Schema" ID="62a663ce-978a-4b33-91c1-a618b1193e64" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/ClassActivityDataService.svc?xsd=xsd2" />
+    <MetadataFile FileName="ClassActivityDataService.disco" MetadataType="Disco" ID="205d29d2-6b48-4f7a-8a29-50148cfe1a23" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/ClassActivityDataService.svc?disco" />
+    <MetadataFile FileName="ClassActivityDataService1.xsd" MetadataType="Schema" ID="b248f8f3-12c2-4591-949f-a2b3fdc483c0" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/ClassActivityDataService.svc?xsd=xsd3" />
+    <MetadataFile FileName="ClassActivityDataService2.xsd" MetadataType="Schema" ID="8001ab1e-e751-4ef0-b0b3-e91c72a640fa" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/ClassActivityDataService.svc?xsd=xsd0" />
+    <MetadataFile FileName="ClassActivityDataService3.xsd" MetadataType="Schema" ID="1a013408-5dc5-4619-8daa-acc1cb8bb1b6" SourceId="1" SourceUrl="http://tellme.fastsolucoes.com.br/wcf/ClassActivityDataService.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

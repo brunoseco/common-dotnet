@@ -124,12 +124,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Angular20\DefineTemplateNameAngular20.cs" />
-    <Compile Include="Angular20\HelperControlHtmlAngular20.cs" />
-    <Compile Include="Angular20\HelperSysObjectsAngular20.cs" />
-    <Compile Include="Angular20\PathOutputAngular20.cs" />
-    <Compile Include="ReadOnly\HelperSysObjectsReadOnly.cs" />
-    <Compile Include="DDDWithTransaction\HelperSysObjectsDDDWithTransaction.cs" />
     <Compile Include="HelperFixRename.cs" />
     <Compile Include="Structural\ELayer.cs" />
     <Compile Include="Structural\HelperSysObjectUtil.cs" />
@@ -147,26 +141,16 @@
     <Compile Include="Vue\DefineTemplateNameVue.cs" />
     <Compile Include="Vue\HelperSysObjectsVue.cs" />
     <Compile Include="Vue\PathOutputVue.cs" />
-    <Compile Include="Angular\DefineTemplateNameAngular.cs" />
-    <Compile Include="Angular\PathOutputAngular.cs" />
     <Compile Include="Audit.cs" />
     <Compile Include="HelperExternalResources.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Structural\DefineTemplateFolder.cs" />
-    <Compile Include="DefineTemplateName.cs" />
     <Compile Include="HelperFieldConfig.cs" />
     <Compile Include="HelperFlow.cs" />
-    <Compile Include="AngularJs\HelperControlHtml.cs" />
-    <Compile Include="Angular\HelperSysObjectsAngular.cs" />
-    <Compile Include="AngularJs\HelperSysObjectsAngularJs.cs" />
     <Compile Include="Structural\HelperSysObjectsBaseBack.cs" />
     <Compile Include="TableModel\HelperSysObjectsTableModel.cs" />
     <Compile Include="Structural\HelperSysObjectsBase.cs" />
-    <Compile Include="HelperSysObjectsInherit.cs" />
     <Compile Include="HelperSysObjectsClean.cs" />
-    <Compile Include="HelperSysObjectsDbContextPrecompiledViews.cs" />
-    <Compile Include="HelperSysObjectsTests.cs" />
-    <Compile Include="DDD\HelperSysObjectsDDD.cs" />
     <Compile Include="Info.cs" />
     <Compile Include="PathOutput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

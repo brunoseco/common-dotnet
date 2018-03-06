@@ -62,7 +62,7 @@ namespace Common.Gen
 
         public static string MakeAuditFields(TableInfo tableInfo, Info item, string textTemplateAudit, DefineTemplateFolder defineTemplateFolder)
         {
-            var pathTemplateAudit = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defineTemplateFolder.Define(tableInfo), DefineTemplateName.ModelsAudit(tableInfo));
+            var pathTemplateAudit = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defineTemplateFolder.Define(tableInfo), "models.audit");
 
             if (string.IsNullOrEmpty(textTemplateAudit))
                 textTemplateAudit = Read.AllText(tableInfo, pathTemplateAudit, defineTemplateFolder);

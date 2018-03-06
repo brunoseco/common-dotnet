@@ -309,7 +309,7 @@ namespace Common.Gen
 
         public virtual HelperSysObjectsBase DefineFrontTemplateClass(Context config)
         {
-            return new HelperSysObjectsAngular20(config);
+            return new HelperSysObjectsVue(config);
         }
 
         protected override string CamelCaseTransform(string str)

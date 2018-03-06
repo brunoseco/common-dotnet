@@ -178,16 +178,8 @@ namespace Common.Gen
     {
         public TableInfo()
         {
-            this.CodeCustomImplemented = false;
-            this.MovedBaseClassToShared = false;
-            this.MakeCrud = false;
-            this.MakeApp = false;
-            this.MakeApi = false;
-            this.MakeDomain = false;
-            this.MakeTest = false;
+            this.CodeCustomImplemented = false;           
             this.MakeFront = false;
-            this.Scaffold = true;
-            this.TwoCols = false;
             this.Authorize = true;
             this.FieldsConfigShow = FieldConfigShow.ShowAll;
             this.UsePathStrategyOnDefine = false;
@@ -205,31 +197,13 @@ namespace Common.Gen
         public List<FieldConfig> FieldsConfig { get; set; }
 
         public List<MethodConfig> MethodConfig { get; set; }
-
-        public bool InheritQuery { get; set; }
-
-        public bool ModelBase { get; set; }
-
-        public bool ModelBaseWithoutGets { get; set; }
-
-        private string _InheritClassName;
-
+        
         private string _tableName;
-
-        public string InheritClassName
-        {
-            get
-            {
-                return _InheritClassName.IsSent() ? _InheritClassName : this.ClassName;
-            }
-            set { _InheritClassName = value; }
-        }
-
+        
         public string BoundedContext { get; set; }
 
         public bool MakeFront { get; set; }
 
-        public bool Scaffold { get; set; }
 
         public string TableName
         {
@@ -254,29 +228,11 @@ namespace Common.Gen
         public IEnumerable<string> Keys { get; set; }
 
         public IEnumerable<string> KeysTypes { get; set; }
-
-        public bool MakeCrud { get; set; }
-
-        public bool MakeTest { get; set; }
-
-        public bool MakeApp { get; set; }
-
-        public bool MakeApi { get; set; }
-
-        public bool MakeDomain { get; set; }
-
-        public bool MakeSummary { get; set; }
-
-        public bool MakeDto { get; set; }
-
-        public bool MovedBaseClassToShared { get; set; }
-
+        
         public bool CodeCustomImplemented { get; set; }
 
 		public IEnumerable<Info> ReletedClass { get; set; }
         
-		public bool TwoCols { get; set; }
-
 
         #region Obsolet
 
@@ -284,6 +240,7 @@ namespace Common.Gen
         public string TableHelper { get; set; }
         public string LeftKey { get; set; }
         public string RightKey { get; set; }
+        public bool TwoCols { get; set; }
 
 
         #endregion

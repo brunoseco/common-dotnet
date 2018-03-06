@@ -28,7 +28,6 @@ namespace Common.Gen
 
         public string Define()
         {
-
             if (!new DirectoryInfo(_templatePathBase).Exists)
                 throw new InvalidOperationException("Templates folder not Found, remember mark copy allways");
 
@@ -37,22 +36,6 @@ namespace Common.Gen
 
         public string Define(TableInfo tableInfo)
         {
-
-            if (tableInfo.UsePathStrategyOnDefine)
-            {
-                if (tableInfo.ModelBase)
-                    return "Templates\\Base";
-
-                if (tableInfo.InheritQuery)
-                    return "Templates\\inherit";
-
-                if (tableInfo.ModelBaseWithoutGets)
-                    return "Templates\\withoutgets";
-
-                if (!tableInfo.Scaffold)
-                    return "Templates\\withoutScaffold";
-            }
-
             return Define();
 
         }

@@ -24,24 +24,24 @@ namespace Common.Gen
         {
             this._camelCasingExceptions = new List<string> { "cpfcnpj", "cnpj", "cpf", "cep", "cpf_cnpj", "ie" };
         }
+
         protected DefineTemplateFolder _defineTemplateFolder;
+
         protected IEnumerable<string> _camelCasingExceptions;
+
         protected SqlConnection conn { get; set; }
+
         public IEnumerable<Context> Contexts { get; set; }
 
         public abstract void DefineTemplateByTableInfoFields(Context config, TableInfo tableInfo, UniqueListInfo infos);
+
         public abstract void DefineTemplateByTableInfo(Context config, TableInfo tableInfo);
+
         protected ArquitetureType ArquitetureType;
 
         protected virtual void DefineAuditFields(params string[] fields)
         {
             Audit.SetAuditFields(fields);
-        }
-
-
-        protected virtual ArquitetureType getArquitetureType()
-        {
-            return this.ArquitetureType;
         }
 
         public virtual void MakeClass(Context config)
@@ -85,15 +85,6 @@ namespace Common.Gen
         {
             this._camelCasingExceptions = list;
         }
-        public void AddCamelCasingExceptions(string value)
-        {
-            var newList = new List<string>();
-            var defaultList = this._camelCasingExceptions;
-            newList.AddRange(defaultList);
-            newList.Add(value);
-            this._camelCasingExceptions = newList;
-        }
-
 
         protected virtual string GenericTagsTransformer(TableInfo tableInfo, Context configContext, string classBuilder, EOperation operation = EOperation.Undefined)
         {
@@ -127,12 +118,11 @@ namespace Common.Gen
 
         protected virtual string GenericTagsTransformerTableinfo(TableInfo tableInfo, Context configContext, string classBuilder, EOperation operation)
         {
-            var IDomain = tableInfo.MakeCrud ? "IDomainCrud" : "IDomain";
+            var IDomain = "IDomainCrud";
             var keyName = tableInfo.Keys.IsAny() ? tableInfo.Keys.FirstOrDefault() : string.Empty;
 
             classBuilder = classBuilder.Replace("<#KeyName#>", keyName);
             classBuilder = classBuilder.Replace("<#IDomain#>", IDomain);
-            classBuilder = classBuilder.Replace("<#inheritClassName#>", tableInfo.InheritClassName);
             classBuilder = classBuilder.Replace("<#classNameFormated#>", tableInfo.ClassNameFormated ?? tableInfo.ClassName);
             classBuilder = classBuilder.Replace("<#boundedContext#>", tableInfo.BoundedContext);
             classBuilder = classBuilder.Replace("<#KeyNameCamelCase#>", CamelCaseTransform(keyName));
@@ -150,20 +140,6 @@ namespace Common.Gen
 
             return classBuilder;
         }
-
-        public string GenericTagsTransformerRoutes(Context configContext, string classBuilder)
-        {
-            var routeItem = new List<string>();
-            if (configContext.Routes.IsAny())
-            {
-                foreach (var item in configContext.Routes)
-                    routeItem.Add(string.Format("            {0}", item.Route));
-            }
-
-            classBuilder = classBuilder.Replace("<#classCustomItems#>", string.Join(string.Format(",{0}", System.Environment.NewLine), routeItem));
-            return classBuilder;
-        }
-
 
         protected virtual string GenericTagsTransformerInfo(string propertyName, Context configContext, TableInfo tableInfo, Info info, string classBuilder, EOperation operation)
         {
@@ -265,97 +241,6 @@ namespace Common.Gen
         protected string ClassNameLowerAndSeparator(string className)
         {
             return HelperSysObjectUtil.ClassNameLowerAndSeparator(className);
-        }
-
-        protected string BuilderPropertys(IEnumerable<Info> infos, string textTemplatePropertys, Context configContext)
-        {
-            var classBuilderPropertys = string.Empty;
-            if (infos.IsAny())
-            {
-                foreach (var item in infos)
-                {
-                    if (Audit.IsAuditField(item.PropertyName))
-                        continue;
-
-                    var itempropert = textTemplatePropertys
-                        .Replace("<#type#>", item.Type)
-                        .Replace("<#propertyName#>", item.PropertyName)
-                        .Replace("<#propertyNameFromDictionary#>", ChangePropertyNameFromDictionary(item.PropertyName, configContext));
-                    classBuilderPropertys += string.Format("{0}{1}{2}", Tabs.TabModels(), itempropert, System.Environment.NewLine);
-
-                }
-            }
-
-            return classBuilderPropertys;
-        }
-
-        protected string BuilderSampleFilters(IEnumerable<Info> infos, string textTemplateFilters, string classBuilderFilters, Context configContext)
-        {
-            if (infos.IsAny())
-            {
-                foreach (var item in infos)
-                {
-                    var itemFilters = string.Empty;
-
-                    if (item.Type == "string")
-                    {
-                        itemFilters = textTemplateFilters.Replace("<#propertyName#>", item.PropertyName);
-                        itemFilters = itemFilters.Replace("<#condition#>", string.Format("_=>_.{0}.Contains(filters.{0})", item.PropertyName));
-                        itemFilters = itemFilters.Replace("<#filtersRange#>", string.Empty);
-                    }
-                    else if (item.Type == "DateTime")
-                    {
-                        var itemFiltersStart = textTemplateFilters.Replace("<#propertyName#>", String.Format("{0}Start", item.PropertyName));
-                        itemFiltersStart = itemFiltersStart.Replace("<#condition#>", string.Format("_=>_.{0} >= filters.{0}Start ", item.PropertyName));
-                        itemFiltersStart = itemFiltersStart.Replace("<#filtersRange#>", string.Empty);
-
-                        var itemFiltersEnd = textTemplateFilters.Replace("<#propertyName#>", String.Format("{0}End", item.PropertyName));
-                        itemFiltersEnd = itemFiltersEnd.Replace("<#condition#>", string.Format("_=>_.{0}  <= filters.{0}End", item.PropertyName));
-                        itemFiltersEnd = itemFiltersEnd.Replace("<#filtersRange#>", string.Format("filters.{0}End = filters.{0}End.AddDays(1).AddMilliseconds(-1);", item.PropertyName));
-
-                        itemFilters = String.Format("{0}{1}{2}{3}{4}", itemFiltersStart, System.Environment.NewLine, Tabs.TabSets(), itemFiltersEnd, System.Environment.NewLine);
-
-                    }
-                    else if (item.Type == "DateTime?")
-                    {
-                        var itemFiltersStart = textTemplateFilters.Replace("<#propertyName#>", String.Format("{0}Start", item.PropertyName));
-                        itemFiltersStart = itemFiltersStart.Replace("<#condition#>", string.Format("_=>_.{0} != null && _.{0}.Value >= filters.{0}Start.Value", item.PropertyName));
-                        itemFiltersStart = itemFiltersStart.Replace("<#filtersRange#>", string.Empty);
-
-                        var itemFiltersEnd = textTemplateFilters.Replace("<#propertyName#>", String.Format("{0}End", item.PropertyName));
-                        itemFiltersEnd = itemFiltersEnd.Replace("<#condition#>", string.Format("_=>_.{0} != null &&  _.{0}.Value <= filters.{0}End", item.PropertyName));
-                        itemFiltersEnd = itemFiltersEnd.Replace("<#filtersRange#>", string.Format("filters.{0}End = filters.{0}End.Value.AddDays(1).AddMilliseconds(-1);", item.PropertyName));
-
-                        itemFilters = String.Format("{0}{1}{2}{3}{4}", itemFiltersStart, System.Environment.NewLine, Tabs.TabSets(), itemFiltersEnd, System.Environment.NewLine);
-
-                    }
-                    else if (item.Type == "bool?")
-                    {
-                        itemFilters = textTemplateFilters.Replace("<#propertyName#>", item.PropertyName);
-                        itemFilters = itemFilters.Replace("<#condition#>", string.Format("_=>_.{0} != null && _.{0}.Value == filters.{0}", item.PropertyName));
-                        itemFilters = itemFilters.Replace("<#filtersRange#>", string.Empty);
-                    }
-                    else if (item.Type == "int?" || item.Type == "Int64?" || item.Type == "Int16?" || item.Type == "decimal?" || item.Type == "float?")
-                    {
-                        itemFilters = textTemplateFilters.Replace("<#propertyName#>", item.PropertyName);
-                        itemFilters = itemFilters.Replace("<#condition#>", string.Format("_=>_.{0} != null && _.{0}.Value == filters.{0}", item.PropertyName));
-                        itemFilters = itemFilters.Replace("<#filtersRange#>", string.Empty);
-                    }
-                    else
-                    {
-                        itemFilters = textTemplateFilters.Replace("<#propertyName#>", item.PropertyName);
-                        itemFilters = itemFilters.Replace("<#condition#>", string.Format("_=>_.{0} == filters.{0}", item.PropertyName));
-                        itemFilters = itemFilters.Replace("<#filtersRange#>", string.Empty);
-                    }
-
-                    itemFilters = itemFilters.Replace("<#propertyNameFromDictionary#>", ChangePropertyNameFromDictionary(item.PropertyName, configContext)); ;
-
-                    classBuilderFilters += string.Format("{0}{1}{2}", Tabs.TabSets(), itemFilters, System.Environment.NewLine);
-
-                }
-            }
-
-            return classBuilderFilters;
         }
 
         protected string ToolName(TableInfo tableInfo)
@@ -474,10 +359,6 @@ namespace Common.Gen
             classBuilder = classBuilder.Replace("<#CompositeKey#>", classBuilderitemplateCompositeKey);
             return classBuilder;
         }
-        protected bool IsRequired(Info item)
-        {
-            return item.IsNullable == 0;
-        }
         protected bool IsPropertyInstance(TableInfo tableInfo, string propertyName)
         {
             var classBuilderNavPropertys = string.Empty;
@@ -508,21 +389,6 @@ namespace Common.Gen
             return string.Empty;
         }
 
-        protected string PropertyInstanceFieldFilterDefault(TableInfo tableInfo, string propertyName)
-        {
-            var classBuilderNavPropertys = string.Empty;
-            if (tableInfo.ReletedClass.IsNotNull())
-            {
-                foreach (var item in tableInfo.ReletedClass)
-                {
-                    if (item.NavigationType == NavigationType.Instance && item.PropertyNameFk.ToLower() == propertyName.ToLower())
-                        return item.FieldFilterDefault;
-                }
-            }
-
-            return string.Empty;
-        }
-
 
         protected string PropertyInstanceKey(TableInfo tableInfo, string propertyName)
         {
@@ -537,76 +403,6 @@ namespace Common.Gen
             }
 
             return null;
-        }
-        protected string MakePropertyNavigationDto(TableInfo tableInfo, Context configContext, string TextTemplateNavPropertysCollection, string TextTemplateNavPropertysInstace, string classBuilder)
-        {
-            var classBuilderNavPropertys = string.Empty;
-
-            if (tableInfo.ReletedClass.IsNotNull())
-            {
-                foreach (var item in tableInfo.ReletedClass)
-                {
-
-                    var TextTemplateNavPropertys = item.NavigationType == NavigationType.Instance ? TextTemplateNavPropertysInstace : TextTemplateNavPropertysCollection;
-
-
-                    if (item.ClassName == tableInfo.ClassName)
-                        classBuilderNavPropertys += String.Format("{0}{1}", Tabs.TabModels(), TextTemplateNavPropertys
-                            .Replace("<#className#>", item.ClassName)
-                            .Replace("<#classNameNav#>", String.Format("{0}Self", item.ClassName)));
-
-                    if (item.ClassName != tableInfo.ClassName)
-                        classBuilderNavPropertys += String.Format("{0}{1}", Tabs.TabModels(), TextTemplateNavPropertys
-                            .Replace("<#className#>", item.ClassName)
-                            .Replace("<#classNameNav#>", item.ClassName));
-
-
-                }
-            }
-
-            classBuilder = classBuilder
-                .Replace("<#propertysNav#>", classBuilderNavPropertys);
-
-            return classBuilder;
-        }
-        protected string MakePropertyNavigationModels(TableInfo tableInfo, Context configContext, string TextTemplateNavPropertysCollection, string TextTemplateNavPropertysInstace, string classBuilder)
-        {
-            if (!configContext.MakeNavigationPropertys)
-                return classBuilder
-                .Replace("<#propertysNav#>", string.Empty);
-
-            var classBuilderNavPropertys = string.Empty;
-            var usingPropertysNav = string.Empty;
-
-            foreach (var item in tableInfo.ReletedClass)
-            {
-                var TextTemplateNavPropertys = item.NavigationType == NavigationType.Instance ? TextTemplateNavPropertysInstace : TextTemplateNavPropertysCollection;
-
-                if (item.ClassName == tableInfo.ClassName)
-                    classBuilderNavPropertys += String.Format("{0}{1}", Tabs.TabModels(), TextTemplateNavPropertys
-                        .Replace("<#className#>", item.ClassName)
-                        .Replace("<#classNameNav#>", String.Format("{0}Self", item.ClassName)));
-
-                if (item.ClassName != tableInfo.ClassName)
-                    classBuilderNavPropertys += String.Format("{0}{1}", Tabs.TabModels(), TextTemplateNavPropertys
-                        .Replace("<#className#>", item.ClassName)
-                        .Replace("<#classNameNav#>", item.ClassName));
-
-
-                if (item.Module != configContext.Module)
-                {
-                    var usingReference = String.Format("using {0}.Domain;{1}", item.Namespace, System.Environment.NewLine);
-                    if (!usingPropertysNav.Contains(usingReference))
-                        usingPropertysNav += usingReference;
-                }
-
-            }
-
-            classBuilder = classBuilder
-                .Replace("<#propertysNav#>", classBuilderNavPropertys);
-
-            return classBuilder;
-
         }
         protected string MakeFilterDateRange(string TextTemplatePropertys, string classBuilderPropertys, Info item)
         {
@@ -625,100 +421,6 @@ namespace Common.Gen
 
             classBuilderPropertys += string.Format("{0}{1}{2}", Tabs.TabModels(), itempropert, System.Environment.NewLine);
             return classBuilderPropertys;
-        }
-        protected virtual string MakeValidationsAttributes(string TextTemplateValidation, string TextTemplateValidationLength, string TextTemplateValidationRequired, string classBuilderitemTemplateValidation, Info item, Context configContext)
-        {
-            if (IsRequired(item) && IsString(item) && IsNotVarcharMax(item))
-            {
-                var itemTemplateValidationLegth = TextTemplateValidationLength
-                    .Replace("<#Length#>", item.Length)
-                    .Replace("<#className#>", item.ClassName)
-                    .Replace("<#propertyName#>", item.PropertyName)
-                    .Replace("<#propertyNameFromDictionary#>", ChangePropertyNameFromDictionary(item.PropertyName, configContext));
-
-                var itemTemplateValidationRequired = TextTemplateValidationRequired
-                   .Replace("<#propertyName#>", item.PropertyName)
-                   .Replace("<#className#>", item.ClassName)
-                   .Replace("<#propertyNameFromDictionary#>", ChangePropertyNameFromDictionary(item.PropertyName, configContext));
-
-                var itemTemplateValidation = TextTemplateValidation.Replace("<#propertyName#>", item.PropertyName).Replace("<#type#>", item.Type).Replace("<#tab#>", Tabs.TabModels());
-                itemTemplateValidation = itemTemplateValidation.Replace("<#RequiredValidation#>", Tabs.TabModels(itemTemplateValidationRequired));
-                itemTemplateValidation = itemTemplateValidation.Replace("<#MaxLengthValidation#>", Tabs.TabModels(itemTemplateValidationLegth));
-                itemTemplateValidation = itemTemplateValidation.Replace("<#propertyNameFromDictionary#>", ChangePropertyNameFromDictionary(item.PropertyName, configContext));
-                itemTemplateValidation = itemTemplateValidation.Replace("<#MaxLengthValidation#>", Tabs.TabModels(itemTemplateValidationLegth));
-
-                classBuilderitemTemplateValidation += string.Format("{0}{1}", itemTemplateValidation, System.Environment.NewLine);
-                return classBuilderitemTemplateValidation;
-            }
-            else if (IsRequired(item) && IsString(item) && IsVarcharMax(item))
-            {
-
-                var itemTemplateValidationRequired = TextTemplateValidationRequired
-                   .Replace("<#propertyName#>", item.PropertyName)
-                   .Replace("<#className#>", item.ClassName)
-                   .Replace("<#propertyNameFromDictionary#>", ChangePropertyNameFromDictionary(item.PropertyName, configContext));
-
-                var itemTemplateValidation = TextTemplateValidation.Replace("<#propertyName#>", item.PropertyName).Replace("<#type#>", item.Type).Replace("<#tab#>", Tabs.TabModels());
-                itemTemplateValidation = itemTemplateValidation.Replace("<#RequiredValidation#>", Tabs.TabModels(itemTemplateValidationRequired));
-                itemTemplateValidation = itemTemplateValidation.Replace("<#propertyNameFromDictionary#>", ChangePropertyNameFromDictionary(item.PropertyName, configContext));
-                itemTemplateValidation = RemoveLine(itemTemplateValidation, "<#MaxLengthValidation#>");
-
-
-                classBuilderitemTemplateValidation += string.Format("{0}{1}", itemTemplateValidation, System.Environment.NewLine);
-                return classBuilderitemTemplateValidation;
-            }
-
-            else if (IsRequired(item) && IsNotString(item))
-            {
-                var itemTemplateValidationLegth = TextTemplateValidationLength
-                    .Replace("<#Length#>", item.Length)
-                    .Replace("<#propertyName#>", item.PropertyName)
-                    .Replace("<#className#>", item.ClassName)
-                    .Replace("<#propertyNameFromDictionary#>", ChangePropertyNameFromDictionary(item.PropertyName, configContext));
-
-
-                var itemTemplateValidationRequired = TextTemplateValidationRequired
-                   .Replace("<#propertyName#>", item.PropertyName)
-                   .Replace("<#className#>", item.ClassName)
-                   .Replace("<#propertyNameFromDictionary#>", ChangePropertyNameFromDictionary(item.PropertyName, configContext));
-
-                var itemTemplateValidation = TextTemplateValidation.Replace("<#propertyName#>", item.PropertyName).Replace("<#type#>", item.Type).Replace("<#tab#>", Tabs.TabModels());
-                itemTemplateValidation = itemTemplateValidation.Replace("<#RequiredValidation#>", Tabs.TabModels(itemTemplateValidationRequired));
-                itemTemplateValidation = RemoveLine(itemTemplateValidation, "<#MaxLengthValidation#>");
-
-                classBuilderitemTemplateValidation += string.Format("{0}{1}", itemTemplateValidation, System.Environment.NewLine);
-                return classBuilderitemTemplateValidation;
-            }
-
-            else if (!IsRequired(item) && IsString(item) && IsNotVarcharMax(item))
-            {
-                var itemTemplateValidationLegth = TextTemplateValidationLength
-                    .Replace("<#Length#>", item.Length)
-                    .Replace("<#propertyName#>", item.PropertyName)
-                    .Replace("<#className#>", item.ClassName);
-
-                var itemTemplateValidation = TextTemplateValidation.Replace("<#propertyName#>", item.PropertyName).Replace("<#type#>", item.Type).Replace("<#tab#>", Tabs.TabModels());
-                itemTemplateValidation = itemTemplateValidation.Replace("<#propertyNameFromDictionary#>", ChangePropertyNameFromDictionary(item.PropertyName, configContext));
-                itemTemplateValidation = RemoveLine(itemTemplateValidation, "<#RequiredValidation#>");
-                itemTemplateValidation = itemTemplateValidation.Replace("<#MaxLengthValidation#>", Tabs.TabModels(itemTemplateValidationLegth));
-
-                classBuilderitemTemplateValidation += string.Format("{0}{1}", itemTemplateValidation, System.Environment.NewLine);
-                return classBuilderitemTemplateValidation;
-            }
-            else
-            {
-
-
-                var itemTemplateValidation = TextTemplateValidation.Replace("<#propertyName#>", item.PropertyName).Replace("<#type#>", item.Type).Replace("<#tab#>", Tabs.TabModels());
-                itemTemplateValidation = itemTemplateValidation.Replace("<#propertyNameFromDictionary#>", ChangePropertyNameFromDictionary(item.PropertyName, configContext));
-                itemTemplateValidation = RemoveLine(itemTemplateValidation, "<#RequiredValidation#>");
-                itemTemplateValidation = RemoveLine(itemTemplateValidation, "<#MaxLengthValidation#>");
-
-                classBuilderitemTemplateValidation += string.Format("{0}{1}", itemTemplateValidation, System.Environment.NewLine);
-                return classBuilderitemTemplateValidation;
-            }
-
-            return classBuilderitemTemplateValidation;
         }
         protected bool IsString(Info item)
         {
@@ -799,7 +501,6 @@ namespace Common.Gen
             return keys;
         }
 
-
         protected void ExecuteTemplate(ConfigExecutetemplate config)
         {
             if (!config.OverrideFile)
@@ -837,7 +538,6 @@ namespace Common.Gen
         }
 
         #region Flow
-
 
         protected void TemplateStaticFlow(ConfigExecutetemplate configExecutetemplate)
         {
@@ -943,8 +643,6 @@ namespace Common.Gen
 
             using (var stream = new StreamWriter(configExecutetemplate.PathOutput)) { stream.Write(classBuilder); }
         }
-
-
 
         #endregion
 
@@ -1158,14 +856,6 @@ namespace Common.Gen
             return MakePropertyName(column, className, 0);
         }
 
-        private string MakeClassNameTemplateDefault(string tableName)
-        {
-            var result = tableName.Substring(7);
-            result = CamelCaseTransform(result);
-            result = ClearEnd(result);
-            return result;
-        }
-
         private bool Open(string connectionString)
         {
             this.conn = new SqlConnection(connectionString);
@@ -1173,26 +863,6 @@ namespace Common.Gen
             return true;
         }
 
-        private string MakePropertyNameForId(TableInfo tableConfig)
-        {
-            var propertyName = string.Format("{0}Id", tableConfig.ClassName);
-            return propertyName;
-        }
-
-        private string MakePropertyNameDefault(string columnName)
-        {
-
-            var newcolumnName = columnName.Substring(4);
-
-            newcolumnName = TranslateNames(newcolumnName);
-
-            newcolumnName = CamelCaseTransform(newcolumnName);
-
-            newcolumnName = ClearEnd(newcolumnName);
-
-            return newcolumnName;
-
-        }
         protected virtual string ClearEnd(string value)
         {
             value = value.Replace("_X_", "");
@@ -1200,59 +870,12 @@ namespace Common.Gen
             value = value.Replace("-", "");
             return value;
         }
-        protected virtual string TranslateNames(string newcolumnName)
-        {
-
-            newcolumnName = newcolumnName.Contains("_cd_") ? String.Concat(newcolumnName.Replace("_cd_", "_"), "_Id_") : newcolumnName;
-            newcolumnName = newcolumnName.Contains("_nm_") ? String.Concat(newcolumnName.Replace("_nm_", "_"), "_Nome_") : newcolumnName;
-            newcolumnName = newcolumnName.Contains("_ds_") ? String.Concat(newcolumnName.Replace("_ds_", "_"), "_Descricao_") : newcolumnName;
-            newcolumnName = newcolumnName.Contains("_nr_") ? String.Concat(newcolumnName.Replace("_nr_", "_"), "_Numero_") : newcolumnName;
-            newcolumnName = newcolumnName.Contains("_pc_") ? String.Concat(newcolumnName.Replace("_pc_", "_"), "_Porcentagem_") : newcolumnName;
-            newcolumnName = newcolumnName.Contains("_qt_") ? String.Concat(newcolumnName.Replace("_qt_", "_"), "_Quantidade_") : newcolumnName;
-            newcolumnName = newcolumnName.Contains("_dt_") ? String.Concat(newcolumnName.Replace("_dt_", "_"), "_Data_") : newcolumnName;
-            newcolumnName = newcolumnName.Contains("_fl_") ? String.Concat(newcolumnName.Replace("_fl_", "_"), "_Flag_") : newcolumnName;
-            newcolumnName = newcolumnName.Contains("_vl_") ? String.Concat(newcolumnName.Replace("_vl_", "_"), "_Valor_") : newcolumnName;
-            newcolumnName = newcolumnName.Contains("_in_") ? String.Concat(newcolumnName.Replace("_in_", "_"), "") : newcolumnName;
-            newcolumnName = newcolumnName.Contains("_sg_") ? String.Concat(newcolumnName.Replace("_sg_", "_"), "_Sigla_") : newcolumnName;
-            newcolumnName = newcolumnName.Contains("_tp_") ? String.Concat(newcolumnName.Replace("_tp_", "_"), "_Tipo_") : newcolumnName;
-
-            return newcolumnName;
-        }
-        private string TranslateNamesPatnerX(string newcolumnName)
-        {
-
-
-            newcolumnName = newcolumnName.Contains("_X_") ? String.Concat(newcolumnName.Replace("_X_", ""), "") : newcolumnName;
-            newcolumnName = newcolumnName.Contains("_cd") ? String.Concat(newcolumnName.Replace("_cd", ""), "_Id") : newcolumnName;
-
-            return newcolumnName;
-        }
 
         protected virtual string CamelCaseTransform(string value)
         {
             return HelperSysObjectUtil.CamelCaseTransform(value);
         }
 
-        private string makePrefixTable(TableInfo tableConfig)
-        {
-            if (!tableConfig.TableName.Contains("_X_"))
-            {
-                var prefix = tableConfig.TableName.Split('_')[1];
-                return prefix;
-            }
-            return string.Empty;
-        }
-        private string makePrefixField(string columnName)
-        {
-            return columnName.Split('_')[0];
-        }
-        protected string RemoveLine(string itemTemplateValidation, string targetField)
-        {
-            return itemTemplateValidation
-                .Replace(targetField + System.Environment.NewLine, string.Empty)
-                .Replace(System.Environment.NewLine + targetField, string.Empty)
-                .Replace(targetField, string.Empty);
-        }
         private string GetModuleFromContextByTableName(string tableName, string module)
         {
             var result = this.Contexts
@@ -1277,7 +900,7 @@ namespace Common.Gen
                 .Where(_ => _.Module == module)
                 .Where(_ => _.TableInfo
                     .Where(__ => __.TableName.Equals(tableName))
-                    .Where(___ => ___.MakeApp || ___.MakeFront || ___.MakeFront)
+                    .Where(___ => ___.MakeFront)
                     .Any())
                 .Select(_ => _.Namespace).FirstOrDefault();
             return namespaceApp;
@@ -1288,7 +911,6 @@ namespace Common.Gen
                .Where(_ => _.Module == module)
                .Where(_ => _.TableInfo
                    .Where(__ => __.TableName.Equals(tableName))
-                   .Where(___ => ___.MakeDto)
                    .Any())
                .Select(_ => _.Namespace).FirstOrDefault();
             return namespaceDto;
@@ -1403,17 +1025,10 @@ namespace Common.Gen
             }
         }
 
-        private string makeClassName(string tableName)
-        {
-            return MakeClassNameTemplateDefault(tableName);
-        }
         private void IsValid(TableInfo tableInfo)
         {
-            if (!tableInfo.Scaffold)
-            {
-                if (tableInfo.ClassName.IsNull())
-                    throw new InvalidOperationException("Para gerar Classes com Scaffold false é preciso setar a propriedade className");
-            }
+            if (tableInfo.ClassName.IsNull())
+                throw new InvalidOperationException("Para gerar Classes com Scaffold false é preciso setar a propriedade className");
         }
         private void ExecuteTemplatesByTableleInfo(Context config)
         {
@@ -1442,26 +1057,16 @@ namespace Common.Gen
         private void DeleteFilesNotFoudTable(Context config, TableInfo tableInfo)
         {
             var PathOutputMaps = PathOutput.PathOutputMaps(tableInfo, config);
-            var PathOutputDomainModelsValidation = PathOutput.PathOutputDomainModelsValidation(tableInfo, config);
             var PathOutputDomainModels = PathOutput.PathOutputDomainModels(tableInfo, config);
             var PathOutputApp = PathOutput.PathOutputApp(tableInfo, config);
-            var PathOutputUri = PathOutput.PathOutputUri(tableInfo, config);
             var PathOutputDto = PathOutput.PathOutputDto(tableInfo, config);
             var PathOutputApi = PathOutput.PathOutputApi(tableInfo, config);
-            var PathOutputApplicationTest = PathOutput.PathOutputApplicationTest(tableInfo, config);
-            var PathOutputApplicationTestMoq = PathOutput.PathOutputApplicationTestMoq(tableInfo, config);
-            var PathOutputApiTest = PathOutput.PathOutputApiTest(tableInfo, config);
 
             File.Delete(PathOutputMaps);
-            File.Delete(PathOutputDomainModelsValidation);
             File.Delete(PathOutputDomainModels);
             File.Delete(PathOutputApp);
-            File.Delete(PathOutputUri);
             File.Delete(PathOutputDto);
             File.Delete(PathOutputApi);
-            File.Delete(PathOutputApplicationTest);
-            File.Delete(PathOutputApplicationTestMoq);
-            File.Delete(PathOutputApiTest);
 
         }
         private void ExecuteTemplateByTableInfoFields(Context config, string RunOnlyThisClass)
@@ -1474,62 +1079,57 @@ namespace Common.Gen
 
                 this.IsValid(tableInfo);
 
-                if (tableInfo.Scaffold)
+                var reader = GetInfoSysObjectsComplete(config, tableInfo);
+
+                var reletedClass = new UniqueListInfo();
+                reletedClass.AddRange(GetReletaedClasses(config, tableInfo.TableName));
+                reletedClass.AddRange(GetReletaedIntancesComplementedClasses(config, tableInfo.TableName));
+
+                tableInfo.ClassName = MakeClassName(tableInfo);
+                tableInfo.ReletedClass = reletedClass;
+
+                while (reader.Read())
                 {
-                    var reader = GetInfoSysObjectsComplete(config, tableInfo);
+                    var propertyName = this.MakePropertyName(reader["NomeColuna"].ToString(), tableInfo.ClassName, Convert.ToInt32(reader["Chave"]));
+                    var typeCustom = default(string);
 
-                    var reletedClass = new UniqueListInfo();
-                    reletedClass.AddRange(GetReletaedClasses(config, tableInfo.TableName));
-                    reletedClass.AddRange(GetReletaedIntancesComplementedClasses(config, tableInfo.TableName));
+                    var fieldsConfig = tableInfo.FieldsConfig.IsAny() ? tableInfo.FieldsConfig.Where(_ => _.Name.ToUpper() == propertyName.ToUpper()).SingleOrDefault() : null;
+                    if (fieldsConfig.IsNotNull() && fieldsConfig.TypeCustom.IsSent())
+                        typeCustom = fieldsConfig.TypeCustom;
 
-                    tableInfo.ClassName = MakeClassName(tableInfo);
-                    tableInfo.ReletedClass = reletedClass;
-
-                    while (reader.Read())
+                    infos.Add(new Info
                     {
-                        var propertyName = this.MakePropertyName(reader["NomeColuna"].ToString(), tableInfo.ClassName, Convert.ToInt32(reader["Chave"]));
-                        var typeCustom = default(string);
-
-                        var fieldsConfig = tableInfo.FieldsConfig.IsAny() ? tableInfo.FieldsConfig.Where(_ => _.Name.ToUpper() == propertyName.ToUpper()).SingleOrDefault() : null;
-                        if (fieldsConfig.IsNotNull() && fieldsConfig.TypeCustom.IsSent())
-                            typeCustom = fieldsConfig.TypeCustom;
-
-                        infos.Add(new Info
-                        {
-                            Table = reader["Tabela"].ToString(),
-                            ClassName = tableInfo.ClassName,
-                            ColumnName = reader["NomeColuna"].ToString(),
-                            PropertyName = propertyName,
-                            Length = reader["Tamanho"].ToString(),
-                            IsKey = Convert.ToInt32(reader["Chave"]),
-                            IsNullable = Convert.ToInt32(reader["Nulo"]),
-                            Type = TypeConvertCSharp.Convert(reader["tipo"].ToString(), Convert.ToInt32(reader["Nulo"])),
-                            TypeOriginal = reader["tipo"].ToString(),
-                            TypeCustom = typeCustom,
-                            Module = config.Module,
-                            Namespace = config.Namespace,
-                        });
-                    }
-
-                    reader.Close();
-
-                    DefinePropertyDefault(infos);
-                    DefineInfoKey(tableInfo, infos);
-                    DefineFieldFilterDefault(config, tableInfo);
-                    DefineDataItemFieldName(infos, tableInfo);
-
-                    if (infos.Count == 0)
-                    {
-                        if (config.DeleteFilesNotFoundTable)
-                            DeleteFilesNotFoudTable(config, tableInfo);
-
-                        if (config.AlertNotFoundTable)
-                            throw new Exception("Tabela " + tableInfo.TableName + " Não foi econtrada");
-
-                    }
-
+                        Table = reader["Tabela"].ToString(),
+                        ClassName = tableInfo.ClassName,
+                        ColumnName = reader["NomeColuna"].ToString(),
+                        PropertyName = propertyName,
+                        Length = reader["Tamanho"].ToString(),
+                        IsKey = Convert.ToInt32(reader["Chave"]),
+                        IsNullable = Convert.ToInt32(reader["Nulo"]),
+                        Type = TypeConvertCSharp.Convert(reader["tipo"].ToString(), Convert.ToInt32(reader["Nulo"])),
+                        TypeOriginal = reader["tipo"].ToString(),
+                        TypeCustom = typeCustom,
+                        Module = config.Module,
+                        Namespace = config.Namespace,
+                    });
                 }
 
+                reader.Close();
+
+                DefinePropertyDefault(infos);
+                DefineInfoKey(tableInfo, infos);
+                DefineFieldFilterDefault(config, tableInfo);
+                DefineDataItemFieldName(infos, tableInfo);
+
+                if (infos.Count == 0)
+                {
+                    if (config.DeleteFilesNotFoundTable)
+                        DeleteFilesNotFoudTable(config, tableInfo);
+
+                    if (config.AlertNotFoundTable)
+                        throw new Exception("Tabela " + tableInfo.TableName + " Não foi econtrada");
+
+                }
 
                 if (!string.IsNullOrEmpty(RunOnlyThisClass))
                 {
@@ -1689,13 +1289,6 @@ namespace Common.Gen
         {
             return item.Type != "string";
         }
-        private bool IsNotDataRage(string propertyName)
-        {
-            return !propertyName.Contains("Inicio") &&
-                                    !propertyName.Contains("Start") &&
-                                    !propertyName.Contains("End") &&
-                                    !propertyName.Contains("Fim");
-        }
 
         private string convertTypeToTypeTS(string type)
         {
@@ -1719,10 +1312,12 @@ namespace Common.Gen
 
             return type;
         }
+
         private string MakeReletedNamespace(TableInfo tableInfo, Context configContext, string classBuilder)
         {
             return HelperSysObjectUtil.MakeReletedNamespace(tableInfo, configContext, classBuilder);
         }
+
         private string MakeKey(IEnumerable<Info> infos, string textTemplateCompositeKey, string classBuilderitemplateCompositeKey)
         {
             var compositeKey = infos.Where(_ => _.IsKey == 1);

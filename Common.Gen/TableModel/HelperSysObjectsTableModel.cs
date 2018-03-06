@@ -33,8 +33,6 @@ namespace Common.Gen
             PathOutputBase.UsePathProjects = true;
             this._defineTemplateFolder = new DefineTemplateFolder();
             this._defineTemplateFolder.SetTemplatePathBase(template);
-
-           
         }
 
         public override void DefineTemplateByTableInfo(Context config, TableInfo tableInfo)
@@ -46,7 +44,6 @@ namespace Common.Gen
         {
             DefineTemplateByTableInfoFieldsBack(config, tableInfo, infos);
             DefineTemplateByTableInfoFieldsFront(config, tableInfo, infos);
-
         }
 
         public override void DefineTemplateByTableInfoFieldsFront(Context config, TableInfo tableInfo, UniqueListInfo infos)
@@ -59,72 +56,50 @@ namespace Common.Gen
             new HelperSysObjectsAngular(config).DefineTemplateByTableInfo(config, tableInfo);
         }
 
-
         public override void DefineTemplateByTableInfoFieldsBack(Context config, TableInfo tableInfo, UniqueListInfo infos)
         {
+            this.ExecuteTemplateModelsBase(tableInfo, config, infos);
             this.ExecuteTemplateModels(tableInfo, config, infos);
-            this.ExecuteTemplateModelsPartial(tableInfo, config, infos);
+
             this.ExecuteTemplateSimpleFilters(tableInfo, config, infos);
-            this.ExecuteTemplateModelsValiadation(tableInfo, config, infos);
-            this.ExecuteTemplateModelsValiadationPartial(tableInfo, config, infos);
-            this.ExecuteTemplateModelsCustom(tableInfo, config, infos);
+
+            this.ExecuteTemplateFilterBase(tableInfo, config, infos);
             this.ExecuteTemplateFilter(tableInfo, config, infos);
-            this.ExecuteTemplateFilterPartial(tableInfo, config, infos);
+
+            this.ExecuteTemplateMapsBase(tableInfo, config, infos);
             this.ExecuteTemplateMaps(tableInfo, config, infos);
-            this.ExecuteTemplateMapsPartial(tableInfo, config, infos);
+
             this.ExecuteTemplateDbContextInherit(tableInfo, config);
+
+            this.ExecuteTemplateAppBase(tableInfo, config, infos);
             this.ExecuteTemplateApp(tableInfo, config, infos);
-            this.ExecuteTemplateAppPartial(tableInfo, config, infos);
-            this.ExecuteTemplateDto(tableInfo, config, infos);
-            this.ExecuteTemplateDtoSpecialized(tableInfo, config, infos);
-            this.ExecuteTemplateDtoSpecializedResult(tableInfo, config, infos);
-            this.ExecuteTemplateDtoSpecializedReport(tableInfo, config, infos);
-            this.ExecuteTemplateDtoSpecializedDetails(tableInfo, config, infos);
+
+            this.ExecuteTemplateDtoBase(tableInfo, config, infos);
+            this.ExecuteTemplateDtoSave(tableInfo, config, infos);
+            this.ExecuteTemplateDtoGet(tableInfo, config, infos);
+
             this.ExecuteTemplateApi(tableInfo, config, infos);
-            this.ExecuteTemplateSummary(tableInfo, config);
         }
 
         public override void DefineTemplateByTableInfoBack(Context config, TableInfo tableInfo)
         {
-            ExecuteTemplateCustomFilters(tableInfo, config);
-            ExecuteConfigDomain(tableInfo, config);
-            ExecuteHelperValidationAuth(tableInfo, config);
-            ExecuteTemplateDbContext(tableInfo, config);
-            ExecuteTemplateApiConfig(tableInfo, config);
-            ExecuteTemplateAutoMapperProfile(tableInfo, config);
-            ExecuteTemplateAutoMapperProfileCustom(tableInfo, config);
-            ExecuteTemplateContainer(tableInfo, config);
-            ExecuteTemplateContainerPartial(tableInfo, config);
-            ExecuteTemplateAutoMapper(tableInfo, config);
-            ExecuteTemplateUri(tableInfo, config);
-            ExecuteTemplateDbContextGenerateViews(tableInfo, config);
-        }
+            this.ExecuteTemplateCustomFilters(tableInfo, config);
 
+            this.ExecuteTemplateDbContext(tableInfo, config);
+
+            this.ExecuteTemplateApiConfig(tableInfo, config);
+
+            this.ExecuteTemplateAutoMapperProfile(tableInfo, config);
+            this.ExecuteTemplateAutoMapperProfileCustom(tableInfo, config);
+
+            this.ExecuteTemplateContainer(tableInfo, config);
+            this.ExecuteTemplateContainerPartial(tableInfo, config);
+
+            this.ExecuteTemplateAutoMapper(tableInfo, config);
+        }
 
         #region Execute Templates
-        private void ExecuteTemplateApp(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
-        {
-            var pathOutput = PathOutput.PathOutputApp(tableInfo, configContext);
-            if (File.Exists(pathOutput) && tableInfo.CodeCustomImplemented)
-                return;
-
-            if (!tableInfo.MakeApp)
-                return;
-
-            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.App(tableInfo));
-            if (!File.Exists(pathTemplateClass))
-                return;
-
-            var TextTemplateAppClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
-            var classBuilder = GenericTagsTransformer(tableInfo, configContext, TextTemplateAppClass);
-
-            using (var stream = new StreamWriter(pathOutput))
-            {
-                stream.Write(classBuilder);
-            }
-
-        }
-        private void ExecuteTemplateFilter(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        private void ExecuteTemplateFilterBase(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
             if (tableInfo.InheritQuery)
                 return;
@@ -166,7 +141,7 @@ namespace Common.Gen
             }
 
         }
-        private void ExecuteTemplateFilterPartial(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        private void ExecuteTemplateFilter(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
             var pathOutput = PathOutput.PathOutputFilterPartial(tableInfo, configContext);
 
@@ -188,21 +163,43 @@ namespace Common.Gen
             }
 
         }
-        private void ExecuteTemplateAppPartial(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+
+        private void ExecuteTemplateAppBase(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        {
+            var pathOutput = PathOutput.PathOutputApp(tableInfo, configContext);
+            if (File.Exists(pathOutput) && tableInfo.CodeCustomImplemented)
+                return;
+
+            if (!tableInfo.MakeApp)
+                return;
+
+            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "app");
+            if (!File.Exists(pathTemplateClass))
+                return;
+
+            var TextTemplateAppClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
+            var classBuilder = GenericTagsTransformer(tableInfo, configContext, TextTemplateAppClass);
+
+            using (var stream = new StreamWriter(pathOutput))
+            {
+                stream.Write(classBuilder);
+            }
+        }
+
+        private void ExecuteTemplateApp(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
             var pathOutput = PathOutput.PathOutputAppPartial(tableInfo, configContext);
 
             if (!tableInfo.MakeApp)
                 return;
 
-            if (File.Exists(pathOutput) && Convert.ToBoolean(ConfigurationManager.AppSettings["GerarAppPartialExistentes"]) == false)
+            if (File.Exists(pathOutput))
                 return;
 
-            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.AppPartial(tableInfo));
+            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "app.partial");
             if (!File.Exists(pathTemplateClass))
                 return;
-
-
+            
             var TextTemplateAppClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
             var classBuilder = GenericTagsTransformer(tableInfo, configContext, TextTemplateAppClass);
 
@@ -215,7 +212,6 @@ namespace Common.Gen
         }
         private void ExecuteTemplateApi(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
-
             var pathOutput = PathOutput.PathOutputApi(tableInfo, configContext);
             if (!tableInfo.MakeApi)
                 return;
@@ -223,12 +219,9 @@ namespace Common.Gen
             if (File.Exists(pathOutput) && tableInfo.CodeCustomImplemented)
                 return;
 
-            if (File.Exists(pathOutput) && Convert.ToBoolean(ConfigurationManager.AppSettings["GerarApiExistentes"]) == false)
-                return;
+            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "api");
+            var pathTemplateApiGet = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "api.get");
 
-
-            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.Api(tableInfo));
-            var pathTemplateApiGet = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.ApiGet(tableInfo));
             if (!File.Exists(pathTemplateClass))
                 return;
 
@@ -248,16 +241,15 @@ namespace Common.Gen
                 classBuilderApiGet = classBuilderApiGet.Replace("<#KeyType#>", tableInfo.KeysTypes.FirstOrDefault());
             }
 
-
             classBuilder = classBuilder.Replace("<#ApiGet#>", classBuilderApiGet);
 
             using (var stream = new StreamWriter(pathOutput))
             {
                 stream.Write(classBuilder);
             }
-
         }
-        private void ExecuteTemplateDto(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+
+        private void ExecuteTemplateDtoBase(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
             if (!tableInfo.MakeDto)
                 return;
@@ -313,107 +305,46 @@ namespace Common.Gen
             }
 
         }
-        private void ExecuteTemplateDtoSpecialized(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
-        {
-            var pathOutput = PathOutput.PathOutputDtoSpecialized(tableInfo, configContext);
 
-            if (!tableInfo.MakeDto)
-                return;
-
-
-            if (File.Exists(pathOutput) && Convert.ToBoolean(ConfigurationManager.AppSettings["GerarDtoEspecializadosExistentes"]) == false)
-                return;
-
-            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.DtoSpecialized(tableInfo));
-            if (!File.Exists(pathTemplateClass))
-                return;
-
-            var pathTemplateNavPropertysCollection = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.DtoNavPropertyCollection(tableInfo));
-            var pathTemplateNavPropertysInstance = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.DtoNavPropertyInstance(tableInfo));
-
-
-            var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
-            var TextTemplateNavPropertysCollections = Read.AllText(tableInfo, pathTemplateNavPropertysCollection, this._defineTemplateFolder);
-            var TextTemplateNavPropertysInstance = Read.AllText(tableInfo, pathTemplateNavPropertysInstance, this._defineTemplateFolder);
-
-
-            var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
-
-            var classBuilderPropertys = string.Empty;
-
-            classBuilder = MakePropertyNavigationDto(tableInfo, configContext, TextTemplateNavPropertysCollections, TextTemplateNavPropertysInstance, classBuilder);
-
-            using (var stream = new StreamWriter(pathOutput))
-            {
-                stream.Write(classBuilder);
-            }
-
-        }
-        private void ExecuteTemplateDtoSpecializedResult(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        private void ExecuteTemplateDtoGet(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
             var pathOutput = PathOutput.PathOutputDtoSpecializedResult(tableInfo, configContext);
             if (!tableInfo.MakeDto)
                 return;
 
-
-            if (File.Exists(pathOutput) && Convert.ToBoolean(ConfigurationManager.AppSettings["GerarDtoEspecializadosDeResultadoExistentes"]) == false)
+            if (File.Exists(pathOutput))
                 return;
 
-            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.DtoSpecilizedResult(tableInfo));
+            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "dto.get");
             if (!File.Exists(pathTemplateClass))
                 return;
 
-            var pathTemplateNavPropertysCollection = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.DtoNavPropertyCollection(tableInfo));
-            var pathTemplateNavPropertysInstance = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.DtoNavPropertyInstance(tableInfo));
-
-
             var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
-            var TextTemplateNavPropertysCollections = Read.AllText(tableInfo, pathTemplateNavPropertysCollection, this._defineTemplateFolder);
-            var TextTemplateNavPropertysInstance = Read.AllText(tableInfo, pathTemplateNavPropertysInstance, this._defineTemplateFolder);
-
 
             var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
-
-            var classBuilderPropertys = string.Empty;
-
-            classBuilder = MakePropertyNavigationDto(tableInfo, configContext, TextTemplateNavPropertysCollections, TextTemplateNavPropertysInstance, classBuilder);
 
             using (var stream = new StreamWriter(pathOutput))
             {
                 stream.Write(classBuilder);
             }
-
         }
-        private void ExecuteTemplateDtoSpecializedReport(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
-        {
-            var pathOutput = PathOutput.PathOutputDtoSpecializedReport(tableInfo, configContext);
 
+        private void ExecuteTemplateDtoSave(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        {
+            var pathOutput = PathOutput.PathOutputDtoSpecialized(tableInfo, configContext);
             if (!tableInfo.MakeDto)
                 return;
 
-
-            if (File.Exists(pathOutput) && Convert.ToBoolean(ConfigurationManager.AppSettings["GerarDtoEspecializadosDeRelatorioExistentes"]) == false)
+            if (File.Exists(pathOutput))
                 return;
 
-
-            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.DtoSpecializedReport(tableInfo));
+            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "dto.save");
             if (!File.Exists(pathTemplateClass))
                 return;
 
-            var pathTemplateNavPropertysCollection = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.DtoNavPropertyCollection(tableInfo));
-            var pathTemplateNavPropertysInstance = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.DtoNavPropertyInstance(tableInfo));
-
-
             var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
-            var TextTemplateNavPropertysCollections = Read.AllText(tableInfo, pathTemplateNavPropertysCollection, this._defineTemplateFolder);
-            var TextTemplateNavPropertysInstance = Read.AllText(tableInfo, pathTemplateNavPropertysInstance, this._defineTemplateFolder);
-
 
             var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
-
-            var classBuilderPropertys = string.Empty;
-
-            classBuilder = MakePropertyNavigationDto(tableInfo, configContext, TextTemplateNavPropertysCollections, TextTemplateNavPropertysInstance, classBuilder);
 
             using (var stream = new StreamWriter(pathOutput))
             {
@@ -421,42 +352,7 @@ namespace Common.Gen
             }
 
         }
-        private void ExecuteTemplateDtoSpecializedDetails(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
-        {
-            var pathOutput = PathOutput.PathOutputDtoSpecializedDetails(tableInfo, configContext);
 
-            if (!tableInfo.MakeDto)
-                return;
-
-
-            if (File.Exists(pathOutput) && Convert.ToBoolean(ConfigurationManager.AppSettings["GerarDtoEspecializadosDeDetalhesExistentes"]) == false)
-                return;
-
-            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.DtoSpecializedDetails(tableInfo));
-            if (!File.Exists(pathTemplateClass))
-                return;
-
-            var pathTemplateNavPropertysCollection = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.DtoNavPropertyCollection(tableInfo));
-            var pathTemplateNavPropertysInstance = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.DtoNavPropertyInstance(tableInfo));
-
-
-            var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
-            var TextTemplateNavPropertysCollections = Read.AllText(tableInfo, pathTemplateNavPropertysCollection, this._defineTemplateFolder);
-            var TextTemplateNavPropertysInstance = Read.AllText(tableInfo, pathTemplateNavPropertysInstance, this._defineTemplateFolder);
-
-
-            var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
-
-            var classBuilderPropertys = string.Empty;
-
-            classBuilder = MakePropertyNavigationDto(tableInfo, configContext, TextTemplateNavPropertysCollections, TextTemplateNavPropertysInstance, classBuilder);
-
-            using (var stream = new StreamWriter(pathOutput))
-            {
-                stream.Write(classBuilder);
-            }
-
-        }
         private void ExecuteTemplateAutoMapper(TableInfo tableInfo, Context configContext)
         {
 
@@ -505,46 +401,7 @@ namespace Common.Gen
             }
 
         }
-        private void ExecuteConfigDomain(TableInfo tableInfo, Context configContext)
-        {
 
-            var pathOutput = PathOutput.PathOutputConfigDomain(configContext);
-            if (File.Exists(pathOutput))
-                return;
-
-            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.ConfigDomain(tableInfo));
-            if (!File.Exists(pathTemplateClass))
-                return;
-
-            var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
-            var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
-
-            using (var stream = new StreamWriter(pathOutput))
-            {
-                stream.Write(classBuilder);
-            }
-
-        }
-        private void ExecuteHelperValidationAuth(TableInfo tableInfo, Context configContext)
-        {
-
-            var pathOutput = PathOutput.PathOutputHelperValidationAuth(configContext);
-            if (File.Exists(pathOutput))
-                return;
-
-            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.HelperValidateAuth(tableInfo));
-            if (!File.Exists(pathTemplateClass))
-                return;
-
-            var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
-            var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
-
-            using (var stream = new StreamWriter(pathOutput))
-            {
-                stream.Write(classBuilder);
-            }
-
-        }
         private void ExecuteTemplateCustomFilters(TableInfo tableInfo, Context configContext)
         {
             if (!tableInfo.InheritQuery)
@@ -691,7 +548,6 @@ namespace Common.Gen
 
             var pathTemplateRegister = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateName.ContextMappers(tableInfo));
 
-
             var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
             var TextTemplateMappers = Read.AllText(tableInfo, pathTemplateRegister, this._defineTemplateFolder);
             if (configContext.Module.IsNullOrEmpty())
@@ -699,9 +555,7 @@ namespace Common.Gen
 
             var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
 
-
             var classBuilderMappers = string.Empty;
-
 
             foreach (var item in configContext.TableInfo.Where(_ => _.Scaffold))
             {
@@ -801,7 +655,6 @@ namespace Common.Gen
         }
         private void ExecuteTemplateSimpleFilters(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
-
             if (!tableInfo.InheritQuery)
                 return;
 
@@ -829,7 +682,7 @@ namespace Common.Gen
             }
 
         }
-        private void ExecuteTemplateModels(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        private void ExecuteTemplateModelsBase(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
             if (tableInfo.CodeCustomImplemented)
                 return;
@@ -938,6 +791,7 @@ namespace Common.Gen
                     var itempropert = textTemplatePropertys.
                             Replace("<#type#>", item.Type).
                             Replace("<#propertyName#>", item.PropertyName);
+
                     classBuilderPropertys += string.Format("{0}{1}{2}", Tabs.TabModels(), itempropert, System.Environment.NewLine);
 
                     textTemplateAudit = Audit.MakeAuditRow(tableInfo, generateAudit, item, textTemplateAudit, this._defineTemplateFolder);
@@ -960,7 +814,7 @@ namespace Common.Gen
             }
 
         }
-        private void ExecuteTemplateModelsPartial(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        private void ExecuteTemplateModels(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
             if (!tableInfo.MakeDomain)
                 return;
@@ -1188,7 +1042,7 @@ namespace Common.Gen
             }
 
         }
-        private void ExecuteTemplateMapsPartial(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        private void ExecuteTemplateMaps(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
             var pathOutput = PathOutput.PathOutputMapsPartial(tableInfo, configContext);
 
@@ -1233,7 +1087,7 @@ namespace Common.Gen
             }
 
         }
-        private void ExecuteTemplateMaps(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        private void ExecuteTemplateMapsBase(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
             if (!tableInfo.MakeDomain)
                 return;

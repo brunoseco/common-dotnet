@@ -803,8 +803,8 @@ namespace Common.Gen
 
             var pathOutput = string.Empty;
             var pathBase = PathOutputBase.PathBase(configContext.OutputClassApp);
-            pathOutput = Path.Combine(pathBase, "Application", string.Format("{0}App.{1}", tableInfo.ClassName, "cs"));
-            PathOutputBase.MakeDirectory("Application", pathBase);
+            pathOutput = Path.Combine(pathBase, "Services", string.Format("{0}ServiceBase.{1}", tableInfo.ClassName, "cs"));
+            PathOutputBase.MakeDirectory("Services", pathBase);
             return pathOutput;
         }
 
@@ -824,8 +824,8 @@ namespace Common.Gen
 
             var pathOutput = string.Empty;
             var pathBase = PathOutputBase.PathBase(configContext.OutputClassApp);
-            pathOutput = Path.Combine(pathBase, "Application", string.Format("{0}App.ext.{1}", tableInfo.ClassName, "cs"));
-            PathOutputBase.MakeDirectory("Application", pathBase);
+            pathOutput = Path.Combine(pathBase, "Services", string.Format("{0}Service.{1}", tableInfo.ClassName, "cs"));
+            PathOutputBase.MakeDirectory("Services", pathBase);
             return pathOutput;
         }
 
@@ -1255,7 +1255,7 @@ namespace Common.Gen
 
             var pathOutput = string.Empty;
             var pathBase = PathOutputBase.PathBase(configContext.OutputClassDto);
-            pathOutput = Path.Combine(pathBase, "Dto", tableInfo.ClassName, string.Format("{0}DtoSpecialized.ext.{1}", tableInfo.ClassName, "cs"));
+            pathOutput = Path.Combine(pathBase, "Dto", tableInfo.ClassName, string.Format("{0}DtoSve.ext.{1}", tableInfo.ClassName, "cs"));
             PathOutputBase.MakeDirectory(pathBase, "Dto", tableInfo.ClassName);
             return pathOutput;
         }
@@ -1276,7 +1276,7 @@ namespace Common.Gen
 
             var pathOutput = string.Empty;
             var pathBase = PathOutputBase.PathBase(configContext.OutputClassDto);
-            pathOutput = Path.Combine(pathBase, "Dto", tableInfo.ClassName, string.Format("{0}DtoSpecializedResult.ext.{1}", tableInfo.ClassName, "cs"));
+            pathOutput = Path.Combine(pathBase, "Dto", tableInfo.ClassName, string.Format("{0}DtoResult.ext.{1}", tableInfo.ClassName, "cs"));
             PathOutputBase.MakeDirectory(pathBase, "Dto", tableInfo.ClassName);
             return pathOutput;
         }

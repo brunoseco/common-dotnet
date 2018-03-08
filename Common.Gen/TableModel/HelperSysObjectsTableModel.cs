@@ -61,6 +61,7 @@ namespace Common.Gen
             this.ExecuteTemplateModelsBase(tableInfo, config, infos);
             this.ExecuteTemplateModels(tableInfo, config, infos);
 
+            this.ExecuteTemplateRepositoryBase(tableInfo, config, infos);
             this.ExecuteTemplateRepository(tableInfo, config, infos);
 
             this.ExecuteTemplateFilterBase(tableInfo, config, infos);
@@ -77,6 +78,7 @@ namespace Common.Gen
             this.ExecuteTemplateDtoGet(tableInfo, config, infos);
 
             this.ExecuteTemplateApi(tableInfo, config, infos);
+            this.ExecuteTemplateApiPartial(tableInfo, config, infos);
         }
 
         public override void DefineTemplateByTableInfoBack(Context config, TableInfo tableInfo)
@@ -221,6 +223,28 @@ namespace Common.Gen
 
             classBuilder = classBuilder.Replace("<#ApiGet#>", classBuilderApiGet);
 
+            using (var stream = new StreamWriter(pathOutput))
+            {
+                stream.Write(classBuilder);
+            }
+        }
+
+        private void ExecuteTemplateApiPartial(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        {
+            var pathOutput = PathOutput.PathOutputApiPartial(tableInfo, configContext);
+
+            if (File.Exists(pathOutput))
+                return;
+
+            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "api.partial");
+
+            if (!File.Exists(pathTemplateClass))
+                return;
+
+            var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
+
+            var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
+            
             using (var stream = new StreamWriter(pathOutput))
             {
                 stream.Write(classBuilder);
@@ -471,7 +495,7 @@ namespace Common.Gen
                             Replace("<#contextName#>", configContext.ContextName).
                             Replace("<#namespaceDomainSource#>", configContext.NamespaceDomainSource);
 
-                    classBuilderMappers += string.Format("{0}{1}{2}", Tabs.TabModels(), itemInjections, System.Environment.NewLine);
+                    classBuilderMappers += string.Format("{0}{1}{2}", "            ", itemInjections, System.Environment.NewLine);
                 }
             }
 
@@ -525,9 +549,7 @@ namespace Common.Gen
 
             var classBuilderPropertys = string.Empty;
             var classBuilderFilters = string.Empty;
-
-            var generateAudit = Audit.ExistsAuditFieldsDefault(infos);
-
+            
             if (infos.IsAny())
             {
                 foreach (var item in infos)
@@ -581,12 +603,13 @@ namespace Common.Gen
 
         }
 
-        private void ExecuteTemplateRepository(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        private void ExecuteTemplateRepositoryBase(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
             if (tableInfo.CodeCustomImplemented)
                 return;
 
             var pathOutput = PathOutput.PathOutputRepository(tableInfo, configContext);
+
             var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "repository");
             if (!File.Exists(pathTemplateClass))
                 return;
@@ -602,8 +625,7 @@ namespace Common.Gen
             var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
 
             var classBuilderFilters = string.Empty;
-
-            var generateAudit = Audit.ExistsAuditFieldsDefault(infos);
+           
 
             if (infos.IsAny())
             {
@@ -624,17 +646,17 @@ namespace Common.Gen
                     if (item.Type == "string")
                     {
                         itemFilters = textTemplateFilters.Replace("<#propertyName#>", item.PropertyName);
-                        itemFilters = itemFilters.Replace("<#condition#>", string.Format("_=>_.{0}.Contains(filters.{0})", item.PropertyName));
+                        itemFilters = itemFilters.Replace("<#condition#>", string.Format("_ => _.{0}.Contains(filters.{0})", item.PropertyName));
                         itemFilters = itemFilters.Replace("<#filtersRange#>", string.Empty);
                     }
                     else if (item.Type == "DateTime")
                     {
                         var itemFiltersStart = textTemplateFilters.Replace("<#propertyName#>", String.Format("{0}Start", item.PropertyName));
-                        itemFiltersStart = itemFiltersStart.Replace("<#condition#>", string.Format("_=>_.{0} >= filters.{0}Start ", item.PropertyName));
+                        itemFiltersStart = itemFiltersStart.Replace("<#condition#>", string.Format("_ => _.{0} >= filters.{0}Start ", item.PropertyName));
                         itemFiltersStart = itemFiltersStart.Replace("<#filtersRange#>", string.Empty);
 
                         var itemFiltersEnd = textTemplateFilters.Replace("<#propertyName#>", String.Format("{0}End", item.PropertyName));
-                        itemFiltersEnd = itemFiltersEnd.Replace("<#condition#>", string.Format("_=>_.{0}  <= filters.{0}End", item.PropertyName));
+                        itemFiltersEnd = itemFiltersEnd.Replace("<#condition#>", string.Format("_ => _.{0} <= filters.{0}End", item.PropertyName));
                         itemFiltersEnd = itemFiltersEnd.Replace("<#filtersRange#>", string.Format("filters.{0}End = filters.{0}End.AddDays(1).AddMilliseconds(-1);", item.PropertyName));
 
                         itemFilters = String.Format("{0}{1}{2}{3}{4}", itemFiltersStart, System.Environment.NewLine, Tabs.TabSets(), itemFiltersEnd, System.Environment.NewLine);
@@ -643,11 +665,11 @@ namespace Common.Gen
                     else if (item.Type == "DateTime?")
                     {
                         var itemFiltersStart = textTemplateFilters.Replace("<#propertyName#>", String.Format("{0}Start", item.PropertyName));
-                        itemFiltersStart = itemFiltersStart.Replace("<#condition#>", string.Format("_=>_.{0} != null && _.{0}.Value >= filters.{0}Start.Value", item.PropertyName));
+                        itemFiltersStart = itemFiltersStart.Replace("<#condition#>", string.Format("_ => _.{0} != null && _.{0}.Value >= filters.{0}Start.Value", item.PropertyName));
                         itemFiltersStart = itemFiltersStart.Replace("<#filtersRange#>", string.Empty);
 
                         var itemFiltersEnd = textTemplateFilters.Replace("<#propertyName#>", String.Format("{0}End", item.PropertyName));
-                        itemFiltersEnd = itemFiltersEnd.Replace("<#condition#>", string.Format("_=>_.{0} != null &&  _.{0}.Value <= filters.{0}End", item.PropertyName));
+                        itemFiltersEnd = itemFiltersEnd.Replace("<#condition#>", string.Format("_ => _.{0} != null &&  _.{0}.Value <= filters.{0}End", item.PropertyName));
                         itemFiltersEnd = itemFiltersEnd.Replace("<#filtersRange#>", string.Format("filters.{0}End = filters.{0}End.Value.AddDays(1).AddMilliseconds(-1);", item.PropertyName));
 
                         itemFilters = String.Format("{0}{1}{2}{3}{4}", itemFiltersStart, System.Environment.NewLine, Tabs.TabSets(), itemFiltersEnd, System.Environment.NewLine);
@@ -656,19 +678,19 @@ namespace Common.Gen
                     else if (item.Type == "bool?")
                     {
                         itemFilters = textTemplateFilters.Replace("<#propertyName#>", item.PropertyName);
-                        itemFilters = itemFilters.Replace("<#condition#>", string.Format("_=>_.{0} != null && _.{0}.Value == filters.{0}", item.PropertyName));
+                        itemFilters = itemFilters.Replace("<#condition#>", string.Format("_ => _.{0} != null && _.{0}.Value == filters.{0}", item.PropertyName));
                         itemFilters = itemFilters.Replace("<#filtersRange#>", string.Empty);
                     }
                     else if (item.Type == "int?" || item.Type == "Int64?" || item.Type == "Int16?" || item.Type == "decimal?" || item.Type == "float?")
                     {
                         itemFilters = textTemplateFilters.Replace("<#propertyName#>", item.PropertyName);
-                        itemFilters = itemFilters.Replace("<#condition#>", string.Format("_=>_.{0} != null && _.{0}.Value == filters.{0}", item.PropertyName));
+                        itemFilters = itemFilters.Replace("<#condition#>", string.Format("_ => _.{0} != null && _.{0}.Value == filters.{0}", item.PropertyName));
                         itemFilters = itemFilters.Replace("<#filtersRange#>", string.Empty);
                     }
                     else
                     {
                         itemFilters = textTemplateFilters.Replace("<#propertyName#>", item.PropertyName);
-                        itemFilters = itemFilters.Replace("<#condition#>", string.Format("_=>_.{0} == filters.{0}", item.PropertyName));
+                        itemFilters = itemFilters.Replace("<#condition#>", string.Format("_ => _.{0} == filters.{0}", item.PropertyName));
                         itemFilters = itemFilters.Replace("<#filtersRange#>", string.Empty);
                     }
 
@@ -679,6 +701,35 @@ namespace Common.Gen
 
             classBuilder = classBuilder.Replace("<#filtersExpressions#>", classBuilderFilters);
 
+            using (var stream = new StreamWriter(pathOutput))
+            {
+                stream.Write(classBuilder);
+            }
+        }
+
+        private void ExecuteTemplateRepository(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        {
+
+            var pathOutput = PathOutput.PathOutputRepositoryPartial(tableInfo, configContext);
+
+            if (File.Exists(pathOutput))
+                return;
+
+
+            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "repository.partial");
+            if (!File.Exists(pathTemplateClass))
+                return;
+
+            var pathTemplateFilters = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "repository.filters.expression");
+
+            if (!File.Exists(pathTemplateClass))
+                return;
+
+            var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
+            var textTemplateFilters = Read.AllText(tableInfo, pathTemplateFilters, this._defineTemplateFolder);
+
+            var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
+            
             using (var stream = new StreamWriter(pathOutput))
             {
                 stream.Write(classBuilder);

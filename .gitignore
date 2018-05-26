@@ -4,3 +4,4 @@
 .vs/Common/v15/Server/sqlite3/storage.ide
 *.ide-wal
 *.ide-shm
+/src/.vs/Common/v15

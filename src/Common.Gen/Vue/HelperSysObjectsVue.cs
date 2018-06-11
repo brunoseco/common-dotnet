@@ -219,12 +219,15 @@ namespace Common.Gen
                         }
                     }
 
+                    var pathTemplateRequired = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), DefineTemplateNameVue.VueRequired(tableInfo));
+                    var textTemplateRequired = Read.AllText(tableInfo, pathTemplateRequired, this._defineTemplateFolder);
+
                     itemForm = FormFieldReplace(configContext, tableInfo, item, textTemplateField);
                     itemForm = itemForm
                         .Replace("<#modelType#>", modelType)
                         .Replace("<#propertyName#>", item.PropertyName)
                         .Replace("<#className#>", tableInfo.ClassName)
-                        .Replace("<#isRequired#>", item.IsNullable == 0 ? ":rules=\"required\"" : "")
+                        .Replace("<#isRequired#>", item.IsNullable == 0 ? textTemplateRequired : "")
                         .Replace("<#isRequiredLabelTag#>", item.IsNullable == 0 ? "" : "")
                         .Replace("<#ReletedClass#>", PropertyInstance(tableInfo, item.PropertyName))
                         .Replace("<#propertyNameLowerCase#>", CamelCaseTransform(item.PropertyName));

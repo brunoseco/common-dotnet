@@ -33,7 +33,7 @@ namespace Common.Gen
         {
             var pathOutput = string.Empty;
             var pathBase = PathOutputBase.PathBase(configContext.OutputClassDomain);
-            pathOutput = Path.Combine(pathBase, "Context", string.Format("DbContext{0}.{1}", configContext.ContextName, "cs"));
+            pathOutput = Path.Combine(pathBase, "Context", string.Format("DbContext{0}.{1}", configContext.Module, "cs"));
             PathOutputBase.MakeDirectory("Context", pathBase);
             return pathOutput;
         }
@@ -131,7 +131,7 @@ namespace Common.Gen
 
             var pathBase = PathOutputBase.PathBase(configContext.OutputClassApp);
 
-            pathOutput = Path.Combine(pathBase, "Config", string.Format("AutoMapperConfig{0}.{1}", configContext.ContextName, "cs"));
+            pathOutput = Path.Combine(pathBase, "Config", string.Format("AutoMapperConfig{0}.{1}", configContext.Module, "cs"));
             PathOutputBase.MakeDirectory("Config", pathBase);
 
             return pathOutput;
@@ -141,7 +141,7 @@ namespace Common.Gen
         {
             var pathOutput = string.Empty;
             var pathBase = PathOutputBase.PathBase(configContext.OutputClassApp);
-            pathOutput = Path.Combine(pathBase, "Config", string.Format("DomainToDto{0}Base.{1}", configContext.ContextName, "cs"));
+            pathOutput = Path.Combine(pathBase, "Config", string.Format("DomainToDto{0}Base.{1}", configContext.Module, "cs"));
             PathOutputBase.MakeDirectory("Config", pathBase);
             return pathOutput;
         }
@@ -150,7 +150,7 @@ namespace Common.Gen
         {
             var pathOutput = string.Empty;
             var pathBase = PathOutputBase.PathBase(configContext.OutputClassApp);
-            pathOutput = Path.Combine(pathBase, "Config", string.Format("DomainToDto{0}.{1}", configContext.ContextName, "cs"));
+            pathOutput = Path.Combine(pathBase, "Config", string.Format("DomainToDto{0}.{1}", configContext.Module, "cs"));
             PathOutputBase.MakeDirectory("Config", pathBase);
             return pathOutput;
         }
@@ -198,6 +198,15 @@ namespace Common.Gen
             var pathOutput = string.Empty;
             var pathBase = PathOutputBase.PathBase(configContext.OutputClassDto);
             pathOutput = Path.Combine(pathBase, "Dto", tableInfo.ClassName, string.Format("{0}DtoResult.{1}", tableInfo.ClassName, "cs"));
+            PathOutputBase.MakeDirectory(pathBase, "Dto", tableInfo.ClassName);
+            return pathOutput;
+        }
+
+        public static string PathOutputDtoSpecializedDetail(TableInfo tableInfo, Context configContext)
+        {
+            var pathOutput = string.Empty;
+            var pathBase = PathOutputBase.PathBase(configContext.OutputClassDto);
+            pathOutput = Path.Combine(pathBase, "Dto", tableInfo.ClassName, string.Format("{0}DtoDetail.{1}", tableInfo.ClassName, "cs"));
             PathOutputBase.MakeDirectory(pathBase, "Dto", tableInfo.ClassName);
             return pathOutput;
         }

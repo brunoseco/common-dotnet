@@ -25,8 +25,11 @@ namespace Common.Gen
             base.ArquitetureType = ArquitetureType.TableModel;
 
         }
+
         public HelperSysObjectsTableModel(Context context) : this(context, "Templates\\Back") { }
+
         public HelperSysObjectsTableModel(IEnumerable<Context> contexts) : this(contexts, "Templates\\Back") { }
+
         public HelperSysObjectsTableModel(IEnumerable<Context> contexts, string template)
         {
             this.Contexts = contexts;
@@ -77,6 +80,7 @@ namespace Common.Gen
             this.ExecuteTemplateDtoBase(tableInfo, config, infos);
             this.ExecuteTemplateDtoSave(tableInfo, config, infos);
             this.ExecuteTemplateDtoGet(tableInfo, config, infos);
+            this.ExecuteTemplateDtoDetail(tableInfo, config, infos);
 
             this.ExecuteTemplateApi(tableInfo, config, infos);
             this.ExecuteTemplateApiPartial(tableInfo, config, infos);
@@ -165,8 +169,17 @@ namespace Common.Gen
             if (!File.Exists(pathTemplateClass))
                 return;
 
-            var TextTemplateAppClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
-            var classBuilder = GenericTagsTransformer(tableInfo, configContext, TextTemplateAppClass);
+            var textTemplateAppClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
+            var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateAppClass);
+
+            var hasAudit = Audit.ExistsAuditFields(infos);
+            classBuilder = classBuilder.Replace("<#hasAudit#>", hasAudit ? "this.Audit(model, alvo);" : string.Empty);
+
+            var pathTemplateAudit = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "app.audit");
+            var textTemplateAppAudit = Read.AllText(tableInfo, pathTemplateAudit, this._defineTemplateFolder);
+            var classBuilderAudit = GenericTagsTransformer(tableInfo, configContext, textTemplateAppAudit);
+
+            classBuilder = classBuilder.Replace("<#auditMethod#>", hasAudit ? classBuilderAudit : string.Empty);
 
             using (var stream = new StreamWriter(pathOutput))
             {
@@ -245,7 +258,7 @@ namespace Common.Gen
             var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
 
             var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
-            
+
             using (var stream = new StreamWriter(pathOutput))
             {
                 stream.Write(classBuilder);
@@ -327,6 +340,27 @@ namespace Common.Gen
             }
         }
 
+        private void ExecuteTemplateDtoDetail(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
+        {
+            var pathOutput = PathOutput.PathOutputDtoSpecializedDetail(tableInfo, configContext);
+
+            if (File.Exists(pathOutput))
+                return;
+
+            var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "dto.detail");
+            if (!File.Exists(pathTemplateClass))
+                return;
+
+            var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
+
+            var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
+
+            using (var stream = new StreamWriter(pathOutput))
+            {
+                stream.Write(classBuilder);
+            }
+        }
+
         private void ExecuteTemplateDtoSave(TableInfo tableInfo, Context configContext, IEnumerable<Info> infos)
         {
             var pathOutput = PathOutput.PathOutputDtoSpecialized(tableInfo, configContext);
@@ -377,11 +411,13 @@ namespace Common.Gen
             var pathTemplateMappers = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "profile.registers");
             var pathTemplateMappersSave = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "profile.registers.save");
             var pathTemplateMappersGet = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "profile.registers.get");
+            var pathTemplateMappersDetail = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "profile.registers.detail");
 
             var textTemplateClass = Read.AllText(tableInfo, pathTemplateClass, this._defineTemplateFolder);
             var textTemplateMappers = Read.AllText(tableInfo, pathTemplateMappers, this._defineTemplateFolder);
             var textTemplateMappersSave = Read.AllText(tableInfo, pathTemplateMappersSave, this._defineTemplateFolder);
             var textTemplateMappersGet = Read.AllText(tableInfo, pathTemplateMappersGet, this._defineTemplateFolder);
+            var textTemplateMappersDetail = Read.AllText(tableInfo, pathTemplateMappersDetail, this._defineTemplateFolder);
 
             var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
 
@@ -393,15 +429,15 @@ namespace Common.Gen
 
                 if (!string.IsNullOrEmpty(className))
                 {
-                    var itemMapper = textTemplateMappers.
-                            Replace("<#className#>", className);
-
+                    var itemMapper = textTemplateMappers.Replace("<#className#>", className);
                     var itemMapperSave = textTemplateMappersSave.Replace("<#className#>", className);
                     var itemMapperGet = textTemplateMappersGet.Replace("<#className#>", className);
+                    var itemMapperDetail = textTemplateMappersDetail.Replace("<#className#>", className);
 
                     classBuilderMappers += string.Format("{0}{1}{2}", Tabs.TabSets(), itemMapper, System.Environment.NewLine);
                     classBuilderMappers += string.Format("{0}{1}{2}", Tabs.TabSets(), itemMapperSave, System.Environment.NewLine);
                     classBuilderMappers += string.Format("{0}{1}{2}", Tabs.TabSets(), itemMapperGet, System.Environment.NewLine);
+                    classBuilderMappers += string.Format("{0}{1}{2}", Tabs.TabSets(), itemMapperDetail, System.Environment.NewLine);
                 }
             }
 
@@ -512,7 +548,7 @@ namespace Common.Gen
         {
             var pathOutput = PathOutput.PathOutputContainerPartial(configContext);
 
-            if (File.Exists(pathOutput) && tableInfo.CodeCustomImplemented)
+            if (File.Exists(pathOutput) || tableInfo.CodeCustomImplemented)
                 return;
 
             var pathTemplateClass = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._defineTemplateFolder.Define(tableInfo), "container.partial");
@@ -550,7 +586,7 @@ namespace Common.Gen
 
             var classBuilderPropertys = string.Empty;
             var classBuilderFilters = string.Empty;
-            
+
             if (infos.IsAny())
             {
                 foreach (var item in infos)
@@ -626,7 +662,7 @@ namespace Common.Gen
             var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
 
             var classBuilderFilters = string.Empty;
-           
+
 
             if (infos.IsAny())
             {
@@ -634,9 +670,9 @@ namespace Common.Gen
                 {
                     if (item.IsKey == 1)
                     {
-                        classBuilder = classBuilder.
-                            Replace("<#KeyName#>", item.PropertyName).
-                            Replace("<#KeyNameType#>", item.Type);
+                        classBuilder = classBuilder
+                            .Replace("<#KeyName#>", item.PropertyName)
+                            .Replace("<#KeyNameType#>", item.Type);
 
                         var cast = item.Type == "string" ? ".ToString()" : string.Empty;
                         classBuilder = classBuilder.Replace("<#toString()#>", cast);
@@ -730,7 +766,7 @@ namespace Common.Gen
             var textTemplateFilters = Read.AllText(tableInfo, pathTemplateFilters, this._defineTemplateFolder);
 
             var classBuilder = GenericTagsTransformer(tableInfo, configContext, textTemplateClass);
-            
+
             using (var stream = new StreamWriter(pathOutput))
             {
                 stream.Write(classBuilder);
@@ -793,115 +829,6 @@ namespace Common.Gen
 
         #region helpers
 
-        private string MakePropertyNameKeyAlias(string column, string className)
-        {
-
-            if (column.ToLower() == "id")
-                return string.Format("{0}Id", className);
-
-
-            return column;
-        }
-        private void MigatePathFileDomain(Context config, TableInfo tableInfo)
-        {
-            var fileBaseName = tableInfo.ClassName;
-            var pathBase = Path.GetDirectoryName(PathOutput.PathOutputDomainModels(tableInfo, config)).Replace(fileBaseName, "");
-
-            var FileVariants = new string[] {
-                    string.Format("{0}.cs", fileBaseName),
-                    string.Format("{0}.ext.cs", fileBaseName),
-                    string.Format("{0}.Validation.cs", fileBaseName),
-                    string.Format("{0}.Validation.ext.cs", fileBaseName),
-                    string.Format("{0}Custom.ext.cs", fileBaseName),
-                };
-
-            MigatePathFile(pathBase, fileBaseName, FileVariants);
-
-        }
-        private void MigatePathFileDto(Context config, TableInfo tableInfo)
-        {
-            var fileBaseName = tableInfo.ClassName;
-            var pathBase = Path.GetDirectoryName(PathOutput.PathOutputDto(tableInfo, config)).Replace(fileBaseName, "");
-
-            var FileVariants = new string[] {
-                    string.Format("{0}Dto.cs", fileBaseName),
-                    string.Format("{0}DtoSpecialized.ext.cs", fileBaseName),
-                    string.Format("{0}DtoSpecializedResult.ext.cs", fileBaseName),
-                    string.Format("{0}DtoSpecializedReport.ext.cs", fileBaseName),
-                    string.Format("{0}DtoSpecializedDetails.ext.cs", fileBaseName),
-                };
-
-            MigatePathFile(pathBase, fileBaseName, FileVariants);
-
-        }
-        private void MigatePathFile(string pathBase, string fileBaseName, string[] FileVariants)
-        {
-
-            var folder = Path.Combine(pathBase, fileBaseName);
-            if (!Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
-
-            foreach (var file in FileVariants)
-            {
-                var fileFound = new DirectoryInfo(pathBase).GetFiles(file).SingleOrDefault();
-                if (fileFound != null)
-                {
-                    if (File.Exists(fileFound.FullName))
-                    {
-                        fileFound.CopyTo(Path.Combine(folder, file));
-                        fileFound.Delete();
-                    }
-                }
-
-            }
-        }
-        private bool IsPrimaryKey(SqlDataReader reader)
-        {
-            return Convert.ToInt32(reader["Chave"]) == 1;
-        }
-        private bool IsOneToOneRelation(SqlDataReader reader)
-        {
-            return reader["FKCOLUMN_NAME"].ToString() == reader["PKCOLUMN_NAME"].ToString();
-        }
-        private void ClearContextCodeFiles(Context config, string path, string subfolder, Func<TableInfo, bool> predicate, string noDeleteFilesPartner = null)
-        {
-            if (!config.ClearAllFiles)
-                return;
-
-            if (String.IsNullOrEmpty(path))
-                return;
-
-            var directory = new DirectoryInfo(Path.Combine(path, subfolder));
-            if (!directory.Exists)
-                return;
-
-            var files = directory.GetFiles().Where(_ => _.Extension == ".cs");
-            foreach (var item in files)
-            {
-
-                if (!String.IsNullOrEmpty(noDeleteFilesPartner))
-                    if (item.Name.Contains(noDeleteFilesPartner))
-                        continue;
-
-
-                if (item.Name.Contains(".ext"))
-                    continue;
-
-                var deleteDenied = this.Contexts
-                    .Where(_ => _.TableInfo
-                        .Where(__ => item.Name.Contains(__.TableName))
-                        .Where(predicate).Any()).Any();
-
-
-                if (deleteDenied)
-                    continue;
-
-
-                item.Delete();
-            }
-
-        }
-
         public override string TransformFieldString(ConfigExecutetemplate configExecutetemplate, Info info, string propertyName, string textTemplate)
         {
             throw new NotImplementedException();
@@ -926,8 +853,6 @@ namespace Common.Gen
         {
             throw new NotImplementedException();
         }
-
-
 
         public override string TransformFieldUpload(ConfigExecutetemplate configExecutetemplate, Info info, string propertyName, string textTemplate)
         {

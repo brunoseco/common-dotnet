@@ -45,10 +45,14 @@ namespace Common.Gen
             return "router.js.template";
         }
         
-
         public static string VueFieldInput(TableInfo tableInfo)
         {
             return "field.input.template";
+        }
+
+        public static string VueRequired(TableInfo tableInfo)
+        {
+            return "required.template";
         }
 
         public static string VueFieldCheckbox(TableInfo tableInfo)
